@@ -1,45 +1,54 @@
-# @FileName: 
-# @Time    : 2021/10/11
-# @Author  : Dorad, cug.xia@gmail.com
-# @Blog    : https://blog.cuger.cn
-
-
-from PyQt5.QtWidgets import QDialog, QMessageBox
-from pytranscriber.gui.proxy import Ui_Dialog
 from pytranscriber.util.util import MyUtil
+from pytranscriber.gui.message_util import MessageUtil
+from pytranscriber.gui.proxy.view_proxy import ViewProxy
 
 
-class Ctr_Proxy(QDialog):
-    def __init__(self, proxy=None):
-        super(Ctr_Proxy, self).__init__()
-        self.objGUI = Ui_Dialog()
-        self.objGUI.setupUi(self)
-        if not proxy:
-            self.__checkNone()
+class Ctr_Proxy():
+    proxy = {
+        'http': None,
+        'https': None
+    }
+
+    def __init__(self, ctrMain):
+        self.ctrMain = ctrMain
+        self.viewProxy = None
+
+    def show(self):
+        if self.viewProxy is None:
+            self.viewProxy = ViewProxy(self)
+        self.viewProxy.show()
+
+    def save(self):
+        self.ctrMain.ctrDB.clear_proxy()
+        # saving the proxy address
+        if self.proxy['https']:
+            self.ctrMain.ctrDB.save_proxy(self.proxy)
+        # saving proxy address disabled
         else:
-            self.__checkHTTP(proxy)
-        self.objGUI.pushButtonTest.clicked.connect(self.__test)
+            MessageUtil.show_info_message('Proxy disabled successfully', 'Proxy disabled')
 
-    def __checkNone(self):
-        self.objGUI.radioButtonNone.setChecked(True)
-        self.objGUI.lineEditHttpProxy.setEnabled(False)
-        self.objGUI.pushButtonTest.setEnabled(False)
+    def load_data(self):
+        if self.viewProxy is None:
+            self.viewProxy = ViewProxy(self)
 
-    def __checkHTTP(self, proxy=None):
-        self.objGUI.radioButtonHTTP.setChecked(True)
-        self.objGUI.lineEditHttpProxy.setEnabled(True)
-        self.objGUI.pushButtonTest.setEnabled(True)
-        self.objGUI.lineEditHttpProxy.setText(str(proxy))
+        data = self.ctrMain.ctrDB.load_proxy()
+        if data is not None:
+            self.set_proxy_setting(data[1], False)
 
-    def __test(self):
-        proxy = self.objGUI.lineEditHttpProxy.text()
-        if not proxy:
-            return False
-        if not MyUtil.is_internet_connected(proxies={
-            'http': proxy,
-            'https': proxy
-        }):
-            # error
-            msgBox = QMessageBox.critical(self, 'Error', 'Error connecting to Google.')
+    def test_proxy_setting(self, proxy_addr):
+        proxy = {'http': proxy_addr, 'https': proxy_addr}
+
+        if not MyUtil.is_internet_connected(proxy):
+            MessageUtil.show_error_message('Error connecting to Google.','Error')
         else:
-            msgBox = QMessageBox.information(self, 'Success', 'Successfully connected to Google.')
+            MessageUtil.show_info_message('Successfully connected to Google.', 'Success')
+
+    def set_proxy_setting(self, proxy_addr, frontend_request=False):
+        self.proxy = {'http': proxy_addr, 'https': proxy_addr}
+        if frontend_request:
+            self.save()
+        else:
+            self.viewProxy.refresh_gui(proxy_addr)
+
+    def get_proxy_setting(self):
+        return self.proxy
