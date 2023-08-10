@@ -13,10 +13,18 @@
 '''
 
 from pytranscriber.control.ctr_main import Ctr_Main
+from pytranscriber.gui.message_util import MessageUtil
 import multiprocessing
+import sys
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
-    import sys
-    ctrMain = Ctr_Main()
-    sys.exit(main())
+
+    try:
+        ctrMain = Ctr_Main()
+        sys.exit(0)
+    except Exception as ex:
+        MessageUtil.show_error_message(str(ex), "Main Error")
+        sys.exit(1)
+
+
