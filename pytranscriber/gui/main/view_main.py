@@ -217,7 +217,7 @@ class ViewMain:
         self.objGUI.bOpenOutputFolder.clicked.connect(self.__listenerBOpenOutputFolder)
         self.objGUI.bSelectMedia.clicked.connect(self.__listenerBSelectMedia)
 
-        self.objGUI.actionProxy.triggered.connect(self.__setProxy)
+        self.objGUI.actionProxy.triggered.connect(self.__listenerBProxySettings)
         self.objGUI.actionManage_License.triggered.connect(self.__listenerBLicenseSettings)
         self.objGUI.actionLicense.triggered.connect(self.__listenerBLicense)
         self.objGUI.actionDonation.triggered.connect(self.__listenerBDonation)
@@ -346,7 +346,7 @@ class ViewMain:
         if self.ctr_main.ctrLicense.check_active_license() is False:
             return
 
-        if not MyUtil.is_internet_connected(self.ctr_main.proxy):
+        if not MyUtil.is_internet_connected(self.ctr_proxy.get_proxy_setting()):
             MessageUtil.show_error_message(
                 "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
             return
@@ -368,7 +368,7 @@ class ViewMain:
             boolOpenOutputFilesAuto = False
 
         objParamAutosub = Param_Autosub(listFiles, outputFolder, langCode,
-                                        boolOpenOutputFilesAuto, self.ctr_main.proxy)
+                                        boolOpenOutputFilesAuto, self.ctr_proxy.get_proxy_setting())
 
         # execute the main process in separate thread to avoid gui lock
         self.thread_exec = Thread_Exec_Autosub(objParamAutosub)
@@ -423,21 +423,8 @@ class ViewMain:
         else:
             MessageUtil.show_error_message("Error! Invalid output folder.")
 
-    def __setProxy(self):
-        from pytranscriber.control.ctr_proxy import Ctr_Proxy
-        dialog = Ctr_Proxy(self.ctr_main.proxy['http'])
-        result = dialog.exec_()
-        if (result == QDialog.Accepted and dialog.objGUI.radioButtonHTTP.isChecked()):
-            proxy = dialog.objGUI.lineEditHttpProxy.text()
-            self.ctr_main.proxy = {
-                'http': proxy,
-                'https': proxy
-            }
-        elif (result == QDialog.Accepted and dialog.objGUI.radioButtonNone.isChecked()):
-            self.ctr_main.proxy = {
-                'http': None,
-                'https': None
-            }
+    def __listenerBProxySettings(self):
+        self.ctr_main.ctrProxy.show()
 
     def __listenerBLicense(self):
         MessageUtil.show_info_message(
