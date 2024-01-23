@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>400</y>
+      <y>430</y>
       <width>1021</width>
       <height>23</height>
      </rect>
@@ -59,8 +59,8 @@
    <widget class="QLabel" name="labelCurrentOperation">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>350</y>
+      <x>20</x>
+      <y>390</y>
       <width>871</width>
       <height>41</height>
      </rect>
@@ -173,7 +173,7 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>450</y>
+      <y>470</y>
       <width>108</width>
       <height>36</height>
      </rect>
@@ -260,7 +260,7 @@
         <string>openAI Whisper</string>
        </property>
        <property name="checkable">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>

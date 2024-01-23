@@ -19,6 +19,7 @@ from pathlib import Path
 from pytranscriber.model.param_autosub import Param_Autosub
 from pytranscriber.util.util import MyUtil
 from pytranscriber.control.thread_exec_autosub import Thread_Exec_Autosub
+from pytranscriber.control.thread_exec_whisper import Thread_Exec_Whisper
 from pytranscriber.control.thread_cancel_autosub import Thread_Cancel_Autosub
 from pytranscriber.gui.main.window_main import Ui_window
 from pytranscriber.gui.message_util import MessageUtil
@@ -343,14 +344,6 @@ class ViewMain:
             self.objGUI.bRemoveFile.setEnabled(True)
 
     def __listenerBExec(self):
-        if self.ctr_main.ctrLicense.check_active_license() is False:
-            return
-
-        if not MyUtil.is_internet_connected(self.ctr_proxy.get_proxy_setting()):
-            MessageUtil.show_error_message(
-                "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
-            return
-
         # extracts the two letter lang_code from the string on language selection
         selectedLanguage = self.objGUI.cbSelectLang.currentText()
         indexSpace = selectedLanguage.index(" ")
@@ -367,11 +360,24 @@ class ViewMain:
         else:
             boolOpenOutputFilesAuto = False
 
-        objParamAutosub = Param_Autosub(listFiles, outputFolder, langCode,
-                                        boolOpenOutputFilesAuto, self.ctr_proxy.get_proxy_setting())
+        obj_transcription_parameters = Param_Autosub(listFiles, outputFolder, langCode,
+                                        boolOpenOutputFilesAuto, self.ctr_main.ctrProxy.get_proxy_setting())
+
+        if self.objGUI.rbGoogleEngine.isChecked():
+            self.__transcribe_google_engine(obj_transcription_parameters)
+        else:
+            self.__transcribe_whisper(obj_transcription_parameters)
+
+    def __transcribe_google_engine(self, obj_transcription_parameters):
+        if not MyUtil.is_internet_connected(self.ctr_proxy.get_proxy_setting()):
+            MessageUtil.show_error_message(
+                "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
+            return
+
+        self.__set_progress_bar_classic_mode()
 
         # execute the main process in separate thread to avoid gui lock
-        self.thread_exec = Thread_Exec_Autosub(objParamAutosub)
+        self.thread_exec = Thread_Exec_Autosub(obj_transcription_parameters)
 
         # connect signals from work thread to gui controls
         self.thread_exec.signalLockGUI.connect(self.__lockButtonsDuringOperation)
@@ -382,7 +388,37 @@ class ViewMain:
         self.thread_exec.signalErrorMsg.connect(MessageUtil.show_error_message)
         self.thread_exec.start()
 
-        # Show the cancel button
+        self.__show_cancel_button()
+
+
+    def __transcribe_whisper(self, obj_transcription_parameters):
+        #if self.ctr_main.ctrLicense.check_active_license() is False:
+            # show message to buy license
+            #print("No License")
+            #return
+
+        print("HERE ")
+
+        self.__set_progress_bar_pulse_mode()
+
+        # execute the main process in separate thread to avoid gui lock
+        self.thread_exec = Thread_Exec_Whisper(obj_transcription_parameters)
+        self.thread_exec.signalResetGUIAfterSuccess.connect(self.__resetGUIAfterSuccess)
+        self.thread_exec.signalResetGUIAfterCancel.connect(self.__resetGUIAfterCancel)
+        self.thread_exec.signalProgressFileYofN.connect(self.__updateProgressFileYofN)
+        self.thread_exec.signalErrorMsg.connect(MessageUtil.show_error_message)
+
+        self.thread_exec.start()
+
+        self.__show_cancel_button()
+
+    def __set_progress_bar_pulse_mode(self):
+        self.objGUI.progressBar.setRange(0, 0)
+
+    def __set_progress_bar_classic_mode(self):
+        self.objGUI.progressBar.setRange(0, 100)
+
+    def __show_cancel_button(self):
         self.objGUI.bCancel.show()
         self.objGUI.bCancel.setEnabled(True)
 
