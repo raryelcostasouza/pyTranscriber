@@ -19,7 +19,11 @@ import requests
 import re
 from pathlib import PureWindowsPath
 from urllib.parse import urlparse
+from pytranscriber.gui.message_util import MessageUtil
 
+import requests
+from requests.adapters import HTTPAdapter, Retry
+import time
 
 
 class MyUtil(object):
@@ -37,14 +41,38 @@ class MyUtil(object):
         try:
             # connect to the host -- tells us if the host is actually
             # reachable
-            res = requests.get('https://www.google.com', timeout=2,proxies=proxies)
-            if res.status_code != 200:
+            print("Proxy", proxies)
+            headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0'}
+
+            # res = requests.get('http://www.google.com', verify=False,timeout=30, proxies=proxies, headers=headers)
+            #print("status",res.status_code)
+            # if res.status_code != 200:
+            res = MyUtil.send_request('http://www.google.com',proxies=proxies, headers=headers )
+            if res != 200:
                 return False
+
             else:
+                print("status", res.status_code)
                 return True
-        except OSError:
+        except Exception as e:
+            print("Error Name: ", e.__class__.__name__)
+            print("Error Message: ", e)
             pass
+
         return False
+
+    @staticmethod
+    def send_request(url,
+                     n_retries=4,
+                     backoff_factor=0.9,
+                     status_codes=[504, 503, 502, 500, 429], proxies=None, headers=None):
+        sess = requests.Session()
+        retries = Retry(connect=n_retries, backoff_factor=backoff_factor,
+                        status_forcelist=status_codes)
+        sess.mount("https://", HTTPAdapter(max_retries=retries))
+        sess.mount("http://", HTTPAdapter(max_retries=retries))
+        response = sess.get(url, proxies=proxies, headers=headers)
+        return response
 
     @staticmethod
     def percentage(currentval, maxval):
