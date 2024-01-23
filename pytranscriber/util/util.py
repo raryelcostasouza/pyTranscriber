@@ -15,11 +15,6 @@
 import platform
 import os
 import subprocess
-import requests
-import re
-from pathlib import PureWindowsPath
-from urllib.parse import urlparse
-from pytranscriber.gui.message_util import MessageUtil
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
@@ -41,18 +36,13 @@ class MyUtil(object):
         try:
             # connect to the host -- tells us if the host is actually
             # reachable
-            print("Proxy", proxies)
             headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0'}
 
-            # res = requests.get('http://www.google.com', verify=False,timeout=30, proxies=proxies, headers=headers)
-            #print("status",res.status_code)
-            # if res.status_code != 200:
-            res = MyUtil.send_request('http://www.google.com',proxies=proxies, headers=headers )
+            res = MyUtil.send_request('https://www.google.com', proxies=proxies, headers=headers)
             if res != 200:
                 return False
 
             else:
-                print("status", res.status_code)
                 return True
         except Exception as e:
             print("Error Name: ", e.__class__.__name__)
@@ -71,8 +61,8 @@ class MyUtil(object):
                         status_forcelist=status_codes)
         sess.mount("https://", HTTPAdapter(max_retries=retries))
         sess.mount("http://", HTTPAdapter(max_retries=retries))
-        response = sess.get(url, proxies=proxies, headers=headers)
-        return response
+        response = sess.get(url)
+        return response.status_code
 
     @staticmethod
     def percentage(currentval, maxval):
