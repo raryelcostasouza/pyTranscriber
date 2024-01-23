@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pyTranscriber v2.0 BETA - 23/01/2024</string>
+   <string>pyTranscriber Premium v2.0 BETA - 02/03/2023</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="bSelectMedia">
@@ -247,6 +247,7 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionProxy"/>
+    <addaction name="actionManage_License"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -303,6 +304,11 @@
   <action name="actionPortuguese">
    <property name="text">
     <string>Português</string>
+   </property>
+  </action>
+  <action name="actionManage_License">
+   <property name="text">
+    <string>Manage License</string>
    </property>
   </action>
  </widget>

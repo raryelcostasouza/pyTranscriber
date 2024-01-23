@@ -20,7 +20,7 @@ from pytranscriber.model.param_autosub import Param_Autosub
 from pytranscriber.util.util import MyUtil
 from pytranscriber.control.thread_exec_autosub import Thread_Exec_Autosub
 from pytranscriber.control.thread_cancel_autosub import Thread_Cancel_Autosub
-from pytranscriber.gui.gui import Ui_window
+from pytranscriber.gui.window_main import Ui_window
 from pytranscriber.control.ctr_db import CtrDB
 from pytranscriber.gui.message_util import MessageUtil
 import os
