@@ -21,6 +21,7 @@ from pytranscriber.util.util import MyUtil
 from pytranscriber.control.thread_exec_autosub import Thread_Exec_Autosub
 from pytranscriber.control.thread_cancel_autosub import Thread_Cancel_Autosub
 from pytranscriber.gui.gui import Ui_window
+from pytranscriber.control.ctr_db import CtrDB
 from pytranscriber.gui.message_util import MessageUtil
 import os
 import sys
@@ -33,7 +34,12 @@ class Ctr_Main():
         'https': None
     }
 
+
     def __init__(self):
+        self.last_language = None
+
+        self.ctrDB = CtrDB()
+
         app = QtWidgets.QApplication(sys.argv)
         window = QtWidgets.QMainWindow()
         self.objGUI = Ui_window()
@@ -43,6 +49,8 @@ class Ctr_Main():
         self.ctrLicense = Ctr_License(self)
         window.setFixedSize(window.size())
         window.show()
+
+        self._load_last_language()
         sys.exit(app.exec_())
 
     def __initGUI(self, window):
@@ -247,19 +255,32 @@ class Ctr_Main():
     def __listenerChangeLanguage(self, event):
         #get the label of the selected language
         currentLang = event.text()
-        
-        #if it was a valid event
+        self._set_gui_language(currentLang)
+        self._save_last_language(currentLang)
+
+    def _set_gui_language(self, currentLang):
         if currentLang:
-            currentDir = PurePath(__file__).parent.parent.parent    
+            currentDir = PurePath(__file__).parent.parent.parent
             pathLangFile = currentDir.joinpath('pytranscriber').joinpath('gui').joinpath(currentLang)
             self.objGUI.trans.load(str(pathLangFile))
-            
+
             QtWidgets.QApplication.instance().installTranslator(self.objGUI.trans)
         else:
             QtWidgets.QApplication.instance().removeTranslator(self.trans)
-        
-        #refresh UI with translation
+
+        # refresh UI with translation
         self.objGUI.retranslateUi(self.objGUI.mainWindow)
+    def _save_last_language(self, language):
+        self.ctrDB.clear_last_language()
+        self.ctrDB.save_last_language(language)
+
+    def _load_last_language(self):
+        data = self.ctrDB.load_last_language()
+        if data is not None:
+
+            self.last_language = data[1]
+            self._set_gui_language(self.last_language)
+
 
     def __resetGUIAfterSuccess(self):
         self.__resetGUIAfterCancel()
@@ -332,41 +353,42 @@ class Ctr_Main():
         if not MyUtil.is_internet_connected(Ctr_Main.proxy):
             MessageUtil.show_error_message(
                 "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
+            return
+
+        # extracts the two letter lang_code from the string on language selection
+        selectedLanguage = self.objGUI.cbSelectLang.currentText()
+        indexSpace = selectedLanguage.index(" ")
+        langCode = selectedLanguage[:indexSpace]
+
+        listFiles = []
+        for i in range(self.objGUI.qlwListFilesSelected.count()):
+            listFiles.append(str(self.objGUI.qlwListFilesSelected.item(i).text()))
+
+        outputFolder = self.objGUI.qleOutputFolder.text()
+
+        if self.objGUI.chbxOpenOutputFilesAuto.checkState() == Qt.Checked:
+            boolOpenOutputFilesAuto = True
         else:
-            # extracts the two letter lang_code from the string on language selection
-            selectedLanguage = self.objGUI.cbSelectLang.currentText()
-            indexSpace = selectedLanguage.index(" ")
-            langCode = selectedLanguage[:indexSpace]
+            boolOpenOutputFilesAuto = False
 
-            listFiles = []
-            for i in range(self.objGUI.qlwListFilesSelected.count()):
-                listFiles.append(str(self.objGUI.qlwListFilesSelected.item(i).text()))
+        objParamAutosub = Param_Autosub(listFiles, outputFolder, langCode,
+                                        boolOpenOutputFilesAuto, Ctr_Main.proxy)
 
-            outputFolder = self.objGUI.qleOutputFolder.text()
+        # execute the main process in separate thread to avoid gui lock
+        self.thread_exec = Thread_Exec_Autosub(objParamAutosub)
 
-            if self.objGUI.chbxOpenOutputFilesAuto.checkState() == Qt.Checked:
-                boolOpenOutputFilesAuto = True
-            else:
-                boolOpenOutputFilesAuto = False
+        # connect signals from work thread to gui controls
+        self.thread_exec.signalLockGUI.connect(self.__lockButtonsDuringOperation)
+        self.thread_exec.signalResetGUIAfterSuccess.connect(self.__resetGUIAfterSuccess)
+        self.thread_exec.signalResetGUIAfterCancel.connect(self.__resetGUIAfterCancel)
+        self.thread_exec.signalProgress.connect(self.__listenerProgress)
+        self.thread_exec.signalProgressFileYofN.connect(self.__updateProgressFileYofN)
+        self.thread_exec.signalErrorMsg.connect(MessageUtil.show_error_message)
+        self.thread_exec.start()
 
-            objParamAutosub = Param_Autosub(listFiles, outputFolder, langCode,
-                                            boolOpenOutputFilesAuto, Ctr_Main.proxy)
-
-            # execute the main process in separate thread to avoid gui lock
-            self.thread_exec = Thread_Exec_Autosub(objParamAutosub)
-
-            # connect signals from work thread to gui controls
-            self.thread_exec.signalLockGUI.connect(self.__lockButtonsDuringOperation)
-            self.thread_exec.signalResetGUIAfterSuccess.connect(self.__resetGUIAfterSuccess)
-            self.thread_exec.signalResetGUIAfterCancel.connect(self.__resetGUIAfterCancel)
-            self.thread_exec.signalProgress.connect(self.__listenerProgress)
-            self.thread_exec.signalProgressFileYofN.connect(self.__updateProgressFileYofN)
-            self.thread_exec.signalErrorMsg.connect(MessageUtil.show_error_message)
-            self.thread_exec.start()
-
-            # Show the cancel button
-            self.objGUI.bCancel.show()
-            self.objGUI.bCancel.setEnabled(True)
+        # Show the cancel button
+        self.objGUI.bCancel.show()
+        self.objGUI.bCancel.setEnabled(True)
 
     def __listenerBCancel(self):
         self.objGUI.bCancel.setEnabled(False)
