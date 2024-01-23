@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>window</class>
+ <widget class="QMainWindow" name="window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1045</width>
+    <height>487</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>pyTranscriber Premium v2.0 BETA - 02/03/2023</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="bSelectMedia">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>141</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select file(s)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bConvert">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>350</y>
+      <width>341</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Transcribe Audio / Generate Subtitles</string>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>400</y>
+      <width>1021</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelCurrentOperation">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>350</y>
+      <width>871</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bOpenOutputFolder">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>350</y>
+      <width>241</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open Output Folder</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bSelectOutputFolder">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>141</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Output Location</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="qleOutputFolder">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>180</y>
+      <width>861</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>10</y>
+      <width>871</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>List of files to generate transcribe audio / generate subtitles</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+    <widget class="QListWidget" name="qlwListFilesSelected">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>851</width>
+       <height>121</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="bRemoveFile">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>141</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove file(s)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelProgressFileIndex">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>350</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bCancel">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>450</y>
+      <width>108</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cancel</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chbxOpenOutputFilesAuto">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
+      <width>291</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open output files automatically</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>250</y>
+      <width>591</width>
+      <height>54</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="labelSelectLang">
+       <property name="text">
+        <string>Audio Language:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cbSelectLang">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>310</y>
+      <width>591</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lEngine">
+       <property name="text">
+        <string>Engine:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbGoogleEngine">
+       <property name="text">
+        <string>Google Speech</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbWhisper">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>openAI Whisper</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1045</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>Abo&amp;ut</string>
+    </property>
+    <addaction name="actionLicense"/>
+    <addaction name="actionDonation"/>
+    <addaction name="actionAbout_pyTranscriber"/>
+   </widget>
+   <widget class="QMenu" name="menuProxy">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionProxy"/>
+    <addaction name="actionManage_License"/>
+   </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>&amp;Language</string>
+    </property>
+    <addaction name="actionEnglish"/>
+    <addaction name="actionChineseTraditional"/>
+    <addaction name="actionChineseSimplified"/>
+    <addaction name="actionPortuguese"/>
+   </widget>
+   <addaction name="menuProxy"/>
+   <addaction name="menuLanguage"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLicense">
+   <property name="text">
+    <string>&amp;License</string>
+   </property>
+  </action>
+  <action name="actionDonation">
+   <property name="text">
+    <string>&amp;Funding at Github Sponsors</string>
+   </property>
+  </action>
+  <action name="actionAbout_pyTranscriber">
+   <property name="text">
+    <string>&amp;About pyTranscriber</string>
+   </property>
+  </action>
+  <action name="actionProxy">
+   <property name="text">
+    <string>&amp;Proxy</string>
+   </property>
+   <property name="toolTip">
+    <string>Proxy setting</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionChineseTraditional">
+   <property name="text">
+    <string>繁體中文 - Chinese Traditional</string>
+   </property>
+  </action>
+  <action name="actionChineseSimplified">
+   <property name="text">
+    <string>简体中文 - Chinese Simplified</string>
+   </property>
+  </action>
+  <action name="actionPortuguese">
+   <property name="text">
+    <string>Português</string>
+   </property>
+  </action>
+  <action name="actionManage_License">
+   <property name="text">
+    <string>Manage License</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
