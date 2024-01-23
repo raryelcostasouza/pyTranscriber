@@ -14,7 +14,7 @@ import os
 from pytranscriber.util.util import MyUtil
 
 
-class Ctr_Autosub():
+class Ctr_Autosub:
 
     cancel = False
 
