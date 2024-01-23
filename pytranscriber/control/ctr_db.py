@@ -64,3 +64,20 @@ class CtrDB:
         except sqlite3.Error as e:
             MessageUtil.show_error_message(str(e), self.DB_ERROR)
         self.close()
+
+    def load_proxy(self):
+        return self._load_one_row('Proxy')
+
+    def clear_proxy(self):
+        self._truncate_table('Proxy')
+
+    def save_proxy(self, proxy):
+        cur = self.connect()
+        try:
+            cur.execute('INSERT INTO Proxy (proxy_address) VALUES (?)',
+                        (proxy['https'],))
+            self.conn.commit()
+            MessageUtil.show_info_message('Proxy address saved successfully', 'Proxy settings saved')
+        except sqlite3.Error as e:
+            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+        self.close()
