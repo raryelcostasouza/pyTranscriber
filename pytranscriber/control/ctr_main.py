@@ -12,7 +12,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from pytranscriber.control.ctr_license import Ctr_License
 from pytranscriber.control.ctr_proxy import Ctr_Proxy
 from pytranscriber.control.ctr_db import CtrDB
 from pytranscriber.gui.main.view_main import ViewMain
@@ -22,14 +21,12 @@ class Ctr_Main():
 
     def __init__(self):
         self.ctrDB = CtrDB()
-        self.ctrLicense = Ctr_License(self)
         self.ctrProxy = Ctr_Proxy(self)
 
         self.last_language = None
 
         self.viewMain = ViewMain(self)
 
-        self.ctrLicense.load_license_data()
         self._load_last_language()
         self.viewMain.show()
 
