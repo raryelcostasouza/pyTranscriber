@@ -13,10 +13,10 @@ class MessageUtil:
         msg.exec()
 
     @staticmethod
-    def show_error_message(errorMsg):
+    def show_error_message(error_msg, title):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
 
-        msg.setWindowTitle("Error!")
-        msg.setText(errorMsg)
+        msg.setWindowTitle(title)
+        msg.setText(error_msg)
         msg.exec()
