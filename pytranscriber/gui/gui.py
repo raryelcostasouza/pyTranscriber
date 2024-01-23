@@ -81,7 +81,7 @@ class Ui_window(object):
         self.horizontalLayout_5.addWidget(self.cbSelectLang)
         window.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(window)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1045, 28))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1045, 27))
         self.menubar.setObjectName("menubar")
         self.menuAbout = QtWidgets.QMenu(self.menubar)
         self.menuAbout.setObjectName("menuAbout")
@@ -126,7 +126,7 @@ class Ui_window(object):
 
     def retranslateUi(self, window):
         _translate = QtCore.QCoreApplication.translate
-        window.setWindowTitle(_translate("window", "pyTranscriber - v1.9 - 21/12/2022"))
+        window.setWindowTitle(_translate("window", "pyTranscriber v2.0 BETA - 23/01/2024"))
         self.bSelectMedia.setText(_translate("window", "Select file(s)"))
         self.bConvert.setText(_translate("window", "Transcribe Audio / Generate Subtitles"))
         self.bOpenOutputFolder.setText(_translate("window", "Open Output Folder"))

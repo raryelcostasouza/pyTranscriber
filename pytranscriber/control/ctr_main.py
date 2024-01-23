@@ -21,6 +21,7 @@ from pytranscriber.util.util import MyUtil
 from pytranscriber.control.thread_exec_autosub import Thread_Exec_Autosub
 from pytranscriber.control.thread_cancel_autosub import Thread_Cancel_Autosub
 from pytranscriber.gui.gui import Ui_window
+from pytranscriber.gui.message_util import MessageUtil
 import os
 import sys
 from pathlib import PurePath
@@ -33,12 +34,13 @@ class Ctr_Main():
     }
 
     def __init__(self):
-        import sys
         app = QtWidgets.QApplication(sys.argv)
         window = QtWidgets.QMainWindow()
         self.objGUI = Ui_window()
         self.objGUI.setupUi(window)
         self.__initGUI(window)
+
+        self.ctrLicense = Ctr_License(self)
         window.setFixedSize(window.size())
         window.show()
         sys.exit(app.exec_())
@@ -216,6 +218,7 @@ class Ctr_Main():
         self.objGUI.bSelectMedia.clicked.connect(self.__listenerBSelectMedia)
 
         self.objGUI.actionProxy.triggered.connect(self.__setProxy)
+        self.objGUI.actionManage_License.triggered.connect(self.__listenerBLicenseSettings)
         self.objGUI.actionLicense.triggered.connect(self.__listenerBLicense)
         self.objGUI.actionDonation.triggered.connect(self.__listenerBDonation)
         self.objGUI.actionAbout_pyTranscriber.triggered.connect(self.__listenerBAboutpyTranscriber)
@@ -327,7 +330,7 @@ class Ctr_Main():
 
     def __listenerBExec(self):
         if not MyUtil.is_internet_connected(Ctr_Main.proxy):
-            self.__showErrorMessage(
+            MessageUtil.show_error_message(
                 "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
         else:
             # extracts the two letter lang_code from the string on language selection
@@ -358,7 +361,7 @@ class Ctr_Main():
             self.thread_exec.signalResetGUIAfterCancel.connect(self.__resetGUIAfterCancel)
             self.thread_exec.signalProgress.connect(self.__listenerProgress)
             self.thread_exec.signalProgressFileYofN.connect(self.__updateProgressFileYofN)
-            self.thread_exec.signalErrorMsg.connect(self.__showErrorMessage)
+            self.thread_exec.signalErrorMsg.connect(MessageUtil.show_error_message)
             self.thread_exec.start()
 
             # Show the cancel button
@@ -400,7 +403,7 @@ class Ctr_Main():
         if os.path.exists(pathOutputFolder) and os.path.isdir(pathOutputFolder):
             MyUtil.open_file(pathOutputFolder)
         else:
-            self.__showErrorMessage("Error! Invalid output folder.")
+            MessageUtil.show_error_message("Error! Invalid output folder.")
 
     def __setProxy(self):
         from pytranscriber.control.ctr_proxy import Ctr_Proxy
@@ -419,7 +422,7 @@ class Ctr_Main():
             }
 
     def __listenerBLicense(self):
-        self.__showInfoMessage(
+        MessageUtil.show_info_message(
             "<html><body><a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GPL License</a><br><br>"
             + "Copyright (C) 2019 Raryel C. Souza <raryel.costa at gmail.com><br>"
             + "<br>This program is free software: you can redistribute it and/or modify<br>"
@@ -436,38 +439,25 @@ class Ctr_Main():
             + "along with this program.  If not, see <a href=\"https://www.gnu.org/licenses\">www.gnu.org/licenses</a>."
             + "</body></html>", "License")
 
+    def __listenerBLicenseSettings(self):
+        self.ctrLicense.show()
+
     def __listenerBDonation(self):
-        self.__showInfoMessage("<html><body>"
-                + "pyTranscriber is developed as a hobby, so donations of any value are welcomed."
-                + "<br><br>If you feel that this software has been useful and would like to contribute for it to continue improving and have more and bugfixes and features like support to other Speech Recognition Engines (like Vosk and Mozilla Deep Speech) you can either join our <a href=\"https://github.com/sponsors/raryelcostasouza\">funding campaign at Github Sponsors</a> or make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YHB854YHPJCU8&item_name=Donation+pyTranscriber&currency_code=BRL\">Paypal donation</a>."
-                + "<br><br>Thanks in advance!"
-                + "</body></html>", "Funding")
+        MessageUtil.show_info_message("<html><body>"
+                             + "pyTranscriber is developed as a hobby, so donations of any value are welcomed."
+                             + "<br><br>If you feel that this software has been useful and would like to contribute for it to continue improving and have more and bugfixes and features like support to other Speech Recognition Engines (like Vosk and Mozilla Deep Speech) you can either join our <a href=\"https://github.com/sponsors/raryelcostasouza\">funding campaign at Github Sponsors</a> or make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YHB854YHPJCU8&item_name=Donation+pyTranscriber&currency_code=BRL\">Paypal donation</a>."
+                             + "<br><br>Thanks in advance!"
+                             + "</body></html>", "Funding")
 
     def __listenerBAboutpyTranscriber(self):
-        self.__showInfoMessage("<html><body>"
-                               + "<a href=\"https://github.com/raryelcostasouza/pyTranscriber\">pyTranscriber</a> is an application that can be used "
-                               + "to generate <b>automatic transcription / automatic subtitles </b>"
-                               + "for audio/video files through a friendly graphical user interface. "
-                               + "<br><br>"
-                               + "The hard work of speech recognition is made by the <a href=\"https://cloud.google.com/speech/\">Google Speech Recognition API</a> "
-                               + "using <a href=\"https://github.com/agermanidis/autosub\">Autosub</a>"
-                               + "<br><br>pyTranscriber is developed as a hobby, so donations of any value are welcomed."
-                               + "<br><br>If you feel that this software has been useful and would like to contribute for it to continue improving and have more and bugfixes and features like support to other Speech Recognition Engines (like Vosk and Mozilla Deep Speech) you can either join our <a href=\"https://github.com/sponsors/raryelcostasouza\">funding campaign at Github Sponsors</a> or make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YHB854YHPJCU8&item_name=Donation+pyTranscriber&currency_code=BRL\">Paypal donation</a>."
-                               + "<br><br>Thanks in advance!"
-                               + "</body></html>", "About pyTranscriber")
-
-    def __showInfoMessage(self, info_msg, title):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-
-        msg.setWindowTitle(title)
-        msg.setText(info_msg)
-        msg.exec()
-
-    def __showErrorMessage(self, errorMsg):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Critical)
-
-        msg.setWindowTitle("Error!")
-        msg.setText(errorMsg)
-        msg.exec()
+        MessageUtil.show_info_message("<html><body>"
+                             + "<a href=\"https://github.com/raryelcostasouza/pyTranscriber\">pyTranscriber</a> is an application that can be used "
+                             + "to generate <b>automatic transcription / automatic subtitles </b>"
+                             + "for audio/video files through a friendly graphical user interface. "
+                             + "<br><br>"
+                             + "The hard work of speech recognition is made by the <a href=\"https://cloud.google.com/speech/\">Google Speech Recognition API</a> "
+                             + "using <a href=\"https://github.com/agermanidis/autosub\">Autosub</a>"
+                             + "<br><br>pyTranscriber is developed as a hobby, so donations of any value are welcomed."
+                             + "<br><br>If you feel that this software has been useful and would like to contribute for it to continue improving and have more and bugfixes and features like support to other Speech Recognition Engines (like Vosk and Mozilla Deep Speech) you can either join our <a href=\"https://github.com/sponsors/raryelcostasouza\">funding campaign at Github Sponsors</a> or make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YHB854YHPJCU8&item_name=Donation+pyTranscriber&currency_code=BRL\">Paypal donation</a>."
+                             + "<br><br>Thanks in advance!"
+                             + "</body></html>", "About pyTranscriber")
