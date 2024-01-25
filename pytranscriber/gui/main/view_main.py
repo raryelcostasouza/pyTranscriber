@@ -219,7 +219,6 @@ class ViewMain:
         self.objGUI.bSelectMedia.clicked.connect(self.__listenerBSelectMedia)
 
         self.objGUI.actionProxy.triggered.connect(self.__listenerBProxySettings)
-        self.objGUI.actionManage_License.triggered.connect(self.__listenerBLicenseSettings)
         self.objGUI.actionLicense.triggered.connect(self.__listenerBLicense)
         self.objGUI.actionDonation.triggered.connect(self.__listenerBDonation)
         self.objGUI.actionAbout_pyTranscriber.triggered.connect(self.__listenerBAboutpyTranscriber)
@@ -369,9 +368,12 @@ class ViewMain:
             self.__transcribe_whisper(obj_transcription_parameters)
 
     def __transcribe_google_engine(self, obj_transcription_parameters):
-        if not MyUtil.is_internet_connected(self.ctr_proxy.get_proxy_setting()):
+        if not MyUtil.is_internet_connected(self.ctr_main.ctrProxy.get_proxy_setting()):
             MessageUtil.show_error_message(
-                "Error! Cannot reach Google Speech Servers. \n\n1) Please make sure you are connected to the internet. \n2) If you are in China or other place that blocks access to Google servers: please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!")
+                "\n\n1) Please make sure you are connected to the internet. \n" +
+                "2) If you are in China or other place that blocks access to Google servers: " +
+                "please install and enable a desktop-wide VPN app like Windscribe before trying to use pyTranscriber!",
+                "Error! Cannot reach Google Speech Servers. " )
             return
 
         self.__set_progress_bar_classic_mode()
@@ -392,13 +394,6 @@ class ViewMain:
 
 
     def __transcribe_whisper(self, obj_transcription_parameters):
-        #if self.ctr_main.ctrLicense.check_active_license() is False:
-            # show message to buy license
-            #print("No License")
-            #return
-
-        print("HERE ")
-
         self.__set_progress_bar_pulse_mode()
 
         # execute the main process in separate thread to avoid gui lock
@@ -479,9 +474,6 @@ class ViewMain:
             + "You should have received a copy of the GNU General Public License<br>"
             + "along with this program.  If not, see <a href=\"https://www.gnu.org/licenses\">www.gnu.org/licenses</a>."
             + "</body></html>", "License")
-
-    def __listenerBLicenseSettings(self):
-        self.ctr_main.ctrLicense.show()
 
     def __listenerBDonation(self):
         MessageUtil.show_info_message("<html><body>"
