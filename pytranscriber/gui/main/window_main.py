@@ -147,7 +147,7 @@ class Ui_window(object):
 
     def retranslateUi(self, window):
         _translate = QtCore.QCoreApplication.translate
-        window.setWindowTitle(_translate("window", "pyTranscriber Premium v2.0 BETA - 02/03/2023"))
+        window.setWindowTitle(_translate("window", "pyTranscriber v2.0 BETA - 25/01/2024"))
         self.bSelectMedia.setText(_translate("window", "Select file(s)"))
         self.bConvert.setText(_translate("window", "Transcribe Audio / Generate Subtitles"))
         self.bOpenOutputFolder.setText(_translate("window", "Open Output Folder"))
@@ -172,4 +172,3 @@ class Ui_window(object):
         self.actionChineseTraditional.setText(_translate("window", "繁體中文 - Chinese Traditional"))
         self.actionChineseSimplified.setText(_translate("window", "简体中文 - Chinese Simplified"))
         self.actionPortuguese.setText(_translate("window", "Português"))
-        self.actionManage_License.setText(_translate("window", "Manage License"))
