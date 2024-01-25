@@ -23,6 +23,9 @@ from pytranscriber.control.thread_exec_whisper import Thread_Exec_Whisper
 from pytranscriber.control.thread_cancel_autosub import Thread_Cancel_Autosub
 from pytranscriber.gui.main.window_main import Ui_window
 from pytranscriber.gui.message_util import MessageUtil
+from pytranscriber.model.google_speech import Google_Speech
+from pytranscriber.model.whisper import Whisper
+
 import os
 import sys
 from pathlib import PurePath
@@ -48,156 +51,7 @@ class ViewMain:
 
     def __initGUI(self, window):
 
-        # language selection list
-        list_languages = ["en-US - English (United States)",
-                          "cmn-Hans-CN - Chinese (Simplified, China)",
-                          "cmn-Hant-TW - Chinese (Traditional, Taiwan)",
-                          "yue-Hant-HK - Cantonese (Traditional, HK)",
-                          "en-AU - English (Australia)",
-                          "en-CA - English (Canada)",
-                          "en-GB - English (United Kingdom)",
-                          "en-HK - English (Hong Kong)",
-                          "en-IN - English (India)",
-                          "en-GB - English (Ireland)",
-                          "en-NZ - English (New Zealand)",
-                          "en-PH - English (Philippines)",
-                          "en-SG - English (Singapore)",
-                          "af - Afrikaans",
-                          "ar - Arabic",
-                          'ar-DZ - Arabic (Algeria)',
-                          'ar-EG - Arabic (Egypt)',
-                          'ar-IQ - Arabic (Iraq)',
-                          'ar-IS - Arabic (Israel)',
-                          'ar-JO - Arabic (Jordan)',
-                          'ar-KW - Arabic (Kuwait)',
-                          'ar-LB - Arabic (Lebanon)',
-                          'ar-MA - Arabic (Morocco)',
-                          'ar-OM - Arabic (Oman)',
-                          'ar-QA - Arabic (Qatar)',
-                          'ar-SA - Arabic (Saudi Arabia)',
-                          'ar-PS - Arabic (State of Palestine)',
-                          'ar-TN - Arabic (Tunisia)',
-                          'ar-AE - Arabic (United Arab Emirates)',
-                          'ar-YE - Arabic (Yemen)',
-                          "az - Azerbaijani",
-                          "be - Belarusian",
-                          "bg - Bulgarian",
-                          "bn - Bengali",
-                          "bs - Bosnian",
-                          "ca - Catalan",
-                          "ceb -Cebuano",
-                          "cs - Czech",
-                          "cy - Welsh",
-                          "da - Danish",
-                          "de - German",
-                          'de-AT - German (Austria)',
-                          'de-CH - German (Switzerland)',
-                          "el - Greek",
-                          "eo - Esperanto",
-                          'es-ES - Spanish (Spain)',
-                          'es-AR - Spanish (Argentina)',
-                          'es-BO - Spanish (Bolivia)',
-                          'es-CL - Spanish (Chile)',
-                          'es-CO - Spanish (Colombia)',
-                          'es-CR - Spanish (Costa Rica)',
-                          'es-DO - Spanish (Dominican Republic)',
-                          'es-EC - Spanish (Ecuador)',
-                          'es-GT - Spanish (Guatemala)',
-                          'es-HN - Spanish (Honduras)',
-                          'es-MX - Spanish (Mexico)',
-                          'es-NI - Spanish (Nicaragua)',
-                          'es-PA - Spanish (Panama)',
-                          'es-PE - Spanish (Peru)',
-                          'es-PR - Spanish (Puerto Rico)',
-                          'es-PY - Spanish (Paraguay)',
-                          'es-SV - Spanish (El Salvador)',
-                          'es-UY - Spanish (Uruguay)',
-                          'es-US - Spanish (United States)',
-                          'es-VE - Spanish (Venezuela)',
-                          "et - Estonian",
-                          "eu - Basque",
-                          "fa - Persian",
-                          'fil-PH - Filipino (Philippines)',
-                          "fi - Finnish",
-                          "fr - French",
-                          'fr-BE - French (Belgium)',
-                          'fr-CA - French (Canada)',
-                          'fr-CH - French (Switzerland)',
-                          "ga - Irish",
-                          "gl - Galician",
-                          "gu -Gujarati",
-                          "ha - Hausa",
-                          "hi - Hindi",
-                          "hmn - Hmong",
-                          "hr - Croatian",
-                          "ht - Haitian Creole",
-                          "hu - Hungarian",
-                          "hy - Armenian",
-                          "id - Indonesian",
-                          "ig - Igbo",
-                          "is - Icelandic",
-                          "it - Italian",
-                          'it-CH - Italian (Switzerland)',
-                          "iw - Hebrew",
-                          "ja - Japanese",
-                          "jw - Javanese",
-                          "ka - Georgian",
-                          "kk - Kazakh",
-                          "km - Khmer",
-                          "kn - Kannada",
-                          "ko - Korean",
-                          "la - Latin",
-                          "lo - Lao",
-                          "lt - Lithuanian",
-                          "lv - Latvian",
-                          "mg - Malagasy",
-                          "mi - Maori",
-                          "mk - Macedonian",
-                          "ml - Malayalam",
-                          "mn - Mongolian",
-                          "mr - Marathi",
-                          "ms - Malay",
-                          "mt - Maltese",
-                          "my - Myanmar (Burmese)",
-                          "ne - Nepali",
-                          "nl - Dutch",
-                          "no - Norwegian",
-                          "ny - Chichewa",
-                          "pa - Punjabi",
-                          "pl - Polish",
-                          "pt-BR - Portuguese (Brazil)",
-                          "pt-PT - Portuguese (Portugal)",
-                          "ro - Romanian",
-                          "ru - Russian",
-                          "si - Sinhala",
-                          "sk - Slovak",
-                          "sl - Slovenian",
-                          "so - Somali",
-                          "sq - Albanian",
-                          "sr - Serbian",
-                          "st - Sesotho",
-                          "su - Sudanese",
-                          "sv - Swedish",
-                          "sw - Swahili",
-                          "ta - Tamil",
-                          'ta-IN - Tamil (India)',
-                          'ta-MY - Tamil (Malaysia)',
-                          'ta-SG - Tamil (Singapore)',
-                          'ta-LK - Tamil (Sri Lanka)',
-                          "te - Telugu",
-                          "tg - Tajik",
-                          "th - Thai",
-                          "tl - Filipino",
-                          "tr - Turkish",
-                          "uk - Ukrainian",
-                          "ur - Urdu",
-                          "uz - Uzbek",
-                          "vi - Vietnamese",
-                          "yi - Yiddish",
-                          "yo - Yoruba",
-                          "zu - Zulu"]
-
-        self.objGUI.cbSelectLang.addItems(list_languages)
+        self.__listenerRefreshLanguageOptions()
         self.__listenerProgress("", 0)
 
         # default output folder at user desktop
@@ -217,6 +71,8 @@ class ViewMain:
         self.objGUI.bSelectOutputFolder.clicked.connect(self.__listenerBSelectOuputFolder)
         self.objGUI.bOpenOutputFolder.clicked.connect(self.__listenerBOpenOutputFolder)
         self.objGUI.bSelectMedia.clicked.connect(self.__listenerBSelectMedia)
+        self.objGUI.rbGoogleEngine.clicked.connect(self.__listenerRefreshLanguageOptions)
+        self.objGUI.rbWhisper.clicked.connect(self.__listenerRefreshLanguageOptions)
 
         self.objGUI.actionProxy.triggered.connect(self.__listenerBProxySettings)
         self.objGUI.actionLicense.triggered.connect(self.__listenerBLicense)
@@ -328,6 +184,13 @@ class ViewMain:
         fSelectDir = QFileDialog.getExistingDirectory(self.objGUI.centralwidget)
         if fSelectDir:
             self.objGUI.qleOutputFolder.setText(fSelectDir)
+
+    def __listenerRefreshLanguageOptions(self):
+        self.objGUI.cbSelectLang.clear()
+        if self.objGUI.rbWhisper.isChecked():
+            self.objGUI.cbSelectLang.addItems(Whisper.get_supported_languages())
+        else:
+            self.objGUI.cbSelectLang.addItems(Google_Speech.get_supported_languages())
 
     def __listenerBSelectMedia(self):
         # options = QFileDialog.Options()
