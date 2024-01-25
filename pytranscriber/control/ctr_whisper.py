@@ -13,7 +13,7 @@ class CtrWhisper(CtrEngine):
         ):
 
         model = whisper.load_model("base")
-        result = model.transcribe(source_path, verbose=True)
+        result = model.transcribe(source_path, verbose=True, language=src_language)
 
         if CtrWhisper.cancel:
             return -1
@@ -30,7 +30,7 @@ class CtrWhisper(CtrEngine):
     def generate_srt_file_content(transcribed_segments):
         content = ""
         for s in transcribed_segments:
-            content = content + str(s["start"]) + " ----- " + str(s["end"]) + " : "+ str(s["text"]) + "\n"
+            content = content + str(s["start"]) + " ----- " + str(s["end"]) + " : " + str(s["text"]) + "\n"
         return content
 
     @staticmethod
