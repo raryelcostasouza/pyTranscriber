@@ -18,11 +18,11 @@ class Thread_Exec_Whisper(ThreadExecGeneric):
         outputFiles = self._generatePathOutputFile(sourceFile)
         outputFileSRT = outputFiles[0]
         outputFileTXT = outputFiles[1]
-
         #run autosub
         fOutput = CtrWhisper.generate_subtitles(source_path=sourceFile,
                                     output=outputFileSRT,
-                                    src_language=langCode)
+                                    src_language=langCode,
+                                    model=self.obj_transcription_parameters.get_model_whisper())
         #if nothing was returned
         if not fOutput:
             self.signalErrorMsg.emit("Error! Unable to generate subtitles for file " + sourceFile + ".")

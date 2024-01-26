@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1045</width>
-    <height>555</height>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pyTranscriber v2.0 BETA - 02/03/2023</string>
+   <string>pyTranscriber v2.0 BETA - 25/01/2024</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="bSelectMedia">
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>350</y>
+      <y>380</y>
       <width>341</width>
       <height>34</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>430</y>
+      <y>470</y>
       <width>1021</width>
       <height>23</height>
      </rect>
@@ -60,7 +60,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>390</y>
+      <y>420</y>
       <width>871</width>
       <height>41</height>
      </rect>
@@ -73,7 +73,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>350</y>
+      <y>380</y>
       <width>241</width>
       <height>34</height>
      </rect>
@@ -173,7 +173,7 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>470</y>
+      <y>510</y>
       <width>108</width>
       <height>36</height>
      </rect>
@@ -244,7 +244,7 @@
      <item>
       <widget class="QRadioButton" name="rbGoogleEngine">
        <property name="text">
-        <string>Google Speech</string>
+        <string>Google Speech (cloud processing)</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -257,7 +257,91 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>openAI Whisper</string>
+        <string>openAI Whisper (local processing)</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>330</y>
+      <width>611</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="lModels">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Models:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelTiny">
+       <property name="text">
+        <string>Tiny</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelBase">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Base</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelSmall">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Small</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelMedium">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Medium</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelLarge">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Large</string>
        </property>
        <property name="checkable">
         <bool>true</bool>

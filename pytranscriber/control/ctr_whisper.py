@@ -9,10 +9,11 @@ class CtrWhisper(CtrEngine):
     def generate_subtitles(
             source_path,
             src_language,
-            output=None
+            output=None,
+            model='base'
         ):
 
-        model = whisper.load_model("base")
+        model = whisper.load_model(model)
         result = model.transcribe(source_path, verbose=True, language=src_language)
 
         if CtrWhisper.cancel:

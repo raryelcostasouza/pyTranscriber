@@ -12,7 +12,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-class Param_Autosub():
+class Transcription_Parameters():
 
     def __init__(self, listFiles, outputFolder, langCode,
                 boolOpenOutputFilesAuto, proxies=None):
@@ -21,3 +21,10 @@ class Param_Autosub():
         self.langCode = langCode
         self.boolOpenOutputFilesAuto = boolOpenOutputFilesAuto
         self.proxies = proxies
+        self.model_whisper = None
+
+    def set_model_whisper(self, model):
+        self.model_whisper = model
+
+    def get_model_whisper(self):
+        return self.model_whisper
