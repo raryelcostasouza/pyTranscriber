@@ -16,7 +16,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QDialog, QActionGroup
 from PyQt5.QtCore import Qt
 from pathlib import Path
-from pytranscriber.model.param_autosub import Param_Autosub
+from pytranscriber.model.transcription_parameters import Transcription_Parameters
 from pytranscriber.util.util import MyUtil
 from pytranscriber.control.thread_exec_autosub import Thread_Exec_Autosub
 from pytranscriber.control.thread_exec_whisper import Thread_Exec_Whisper
@@ -51,7 +51,8 @@ class ViewMain:
 
     def __initGUI(self, window):
 
-        self.__listenerRefreshLanguageOptions()
+        self.__create_list_whisper_model_options()
+        self.__listenerSwitchEngine()
         self.__listenerProgress("", 0)
 
         # default output folder at user desktop
@@ -71,8 +72,8 @@ class ViewMain:
         self.objGUI.bSelectOutputFolder.clicked.connect(self.__listenerBSelectOuputFolder)
         self.objGUI.bOpenOutputFolder.clicked.connect(self.__listenerBOpenOutputFolder)
         self.objGUI.bSelectMedia.clicked.connect(self.__listenerBSelectMedia)
-        self.objGUI.rbGoogleEngine.clicked.connect(self.__listenerRefreshLanguageOptions)
-        self.objGUI.rbWhisper.clicked.connect(self.__listenerRefreshLanguageOptions)
+        self.objGUI.rbGoogleEngine.clicked.connect(self.__listenerSwitchEngine)
+        self.objGUI.rbWhisper.clicked.connect(self.__listenerSwitchEngine)
 
         self.objGUI.actionProxy.triggered.connect(self.__listenerBProxySettings)
         self.objGUI.actionLicense.triggered.connect(self.__listenerBLicense)
@@ -185,12 +186,40 @@ class ViewMain:
         if fSelectDir:
             self.objGUI.qleOutputFolder.setText(fSelectDir)
 
-    def __listenerRefreshLanguageOptions(self):
+    def __create_list_whisper_model_options(self):
+        self.whisper_model_options = list()
+        self.whisper_model_options.append(self.objGUI.rbModelBase)
+        self.whisper_model_options.append(self.objGUI.rbModelTiny)
+        self.whisper_model_options.append(self.objGUI.rbModelMedium)
+        self.whisper_model_options.append(self.objGUI.rbModelLarge)
+        self.whisper_model_options.append(self.objGUI.rbModelSmall)
+
+
+    def hide_whisper_models(self):
+        self.objGUI.lModels.hide()
+        for rb in self.whisper_model_options:
+            rb.hide()
+    def show_whisper_models(self):
+        self.objGUI.lModels.show()
+        for rb in self.whisper_model_options:
+            rb.show()
+
+    def get_whisper_model_selected(self):
+       if self.objGUI.rbWhisper.isChecked():
+            for rb in self.whisper_model_options:
+                if rb.isChecked():
+                    return rb.text().lower()
+
+
+    def __listenerSwitchEngine(self):
         self.objGUI.cbSelectLang.clear()
         if self.objGUI.rbWhisper.isChecked():
             self.objGUI.cbSelectLang.addItems(Whisper.get_supported_languages())
+            self.show_whisper_models()
         else:
             self.objGUI.cbSelectLang.addItems(Google_Speech.get_supported_languages())
+            self.hide_whisper_models()
+
 
     def __listenerBSelectMedia(self):
         # options = QFileDialog.Options()
@@ -222,12 +251,14 @@ class ViewMain:
         else:
             boolOpenOutputFilesAuto = False
 
-        obj_transcription_parameters = Param_Autosub(listFiles, outputFolder, langCode,
-                                        boolOpenOutputFilesAuto, self.ctr_main.ctrProxy.get_proxy_setting())
+        obj_transcription_parameters = Transcription_Parameters(listFiles, outputFolder, langCode,
+                                                                boolOpenOutputFilesAuto, self.ctr_main.ctrProxy.get_proxy_setting())
 
         if self.objGUI.rbGoogleEngine.isChecked():
             self.__transcribe_google_engine(obj_transcription_parameters)
         else:
+            model_whisper = self.get_whisper_model_selected()
+            obj_transcription_parameters.set_model_whisper(model_whisper)
             self.__transcribe_whisper(obj_transcription_parameters)
 
     def __transcribe_google_engine(self, obj_transcription_parameters):
