@@ -1,13 +1,7 @@
-from PyQt5.QtCore import QThread
-from PyQt5.QtCore import pyqtSignal
 from pytranscriber.control.ctr_whisper import CtrWhisper
 from pytranscriber.control.thread_exec_generic import ThreadExecGeneric
 from pytranscriber.util.util import MyUtil
-from pytranscriber.util.srtparser import SRTParser
-from pytranscriber.gui.message_util import MessageUtil
-import sys
 import traceback
-import os
 
 
 class Thread_Exec_Whisper(ThreadExecGeneric):
@@ -42,9 +36,6 @@ class Thread_Exec_Whisper(ThreadExecGeneric):
 
             #updated the progress message
             self.listenerProgress("Finished", 100)
-
-            #parses the .srt subtitle file and export text to .txt file
-            #SRTParser.extractTextFromSRT(str(outputFileSRT))
 
             if self.obj_transcription_parameters.boolOpenOutputFilesAuto:
                 #open both SRT and TXT output files
