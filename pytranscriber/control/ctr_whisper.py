@@ -10,43 +10,34 @@ from pytranscriber.control.ctr_engine import CtrEngine
 
 class CtrWhisper(CtrEngine, QObject):
     errorSignal = pyqtSignal(str)  # Define the signal
+    MODEL_DIR = None
+
+    @classmethod
+    def initialize(cls):
+        """Initialize MODEL_DIR before using the class."""
+        if cls.MODEL_DIR is None:
+            cls.MODEL_DIR = cls.get_whisper_model_dir()
 
     def __init__(self):
         super().__init__()
         self.errorSignal.connect(self.show_error_message)  # Connect signal to slot
 
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        base_path = sys._MEIPASS  # Running in PyInstaller bundle
-    else:
-        base_path = os.path.dirname(os.path.abspath(__file__))  # Running normally
+    @staticmethod
+    def get_whisper_model_dir():
+        base_path = os.path.expanduser("~/pytranscriber")  # User's home directory
 
-    MODEL_DIR = os.path.join(base_path, "pytranscriber", "whisper_models")
-    os.makedirs(MODEL_DIR, exist_ok=True)
+        model_dir = os.path.join(base_path, "whisper_models")
+        os.makedirs(model_dir, exist_ok=True)  # Ensure directory exists
+        return model_dir
 
     @staticmethod
     def generate_subtitles(source_path, src_language, outputSRT=None, outputTXT=None, model='base'):
-        if getattr(sys, 'frozen', False):  # Running as a bundled executable
-            ffmpeg_path = os.path.join(sys._MEIPASS, "ffmpeg")
-        else:
-            ffmpeg_path = shutil.which("ffmpeg")  # Use system-wide FFmpeg
-
-        os.environ["FFMPEG_PATH"] = ffmpeg_path
-        os.environ["PATH"] += os.pathsep + os.path.dirname(ffmpeg_path)
-
-        # Monkey-patch shutil.which to always return our FFmpeg path
-        original_which = shutil.which  # Backup original function
-
-        def patched_which(cmd, *args, **kwargs):
-            if cmd == "ffmpeg":
-                return ffmpeg_path
-            return original_which(cmd, *args, **kwargs)
-
-        shutil.which = patched_which  # Apply patch
+        CtrWhisper.patch_ffmpeg()  # Ensure FFmpeg is available
 
         model = whisper.load_model(model, download_root=CtrWhisper.MODEL_DIR)
         result = model.transcribe(source_path, verbose=True, language=src_language)
 
-        if CtrWhisper.cancel:
+        if CtrEngine.is_operation_canceled():
             return -1
 
         content_srt = CtrWhisper.generate_srt_file_content(result["segments"])
@@ -90,3 +81,28 @@ class CtrWhisper(CtrEngine, QObject):
         for s in transcribed_segments:
             content = content + str(s["text"])
         return content
+
+    #forces whisper to use the embedded ffmpeg in frozen app
+    @staticmethod
+    def patch_ffmpeg():
+        """Ensure FFmpeg is correctly detected and patched for PyInstaller frozen apps."""
+        if getattr(sys, "frozen", False):  # Running as a bundled executable
+            ffmpeg_path = os.path.join(sys._MEIPASS, "ffmpeg")
+        else:
+            ffmpeg_path = shutil.which("ffmpeg")  # Use system-wide FFmpeg
+
+        if not ffmpeg_path:
+            raise FileNotFoundError("FFmpeg not found!")
+
+        os.environ["FFMPEG_PATH"] = ffmpeg_path
+        os.environ["PATH"] += os.pathsep + os.path.dirname(ffmpeg_path)
+
+        # Monkey-patch shutil.which to always return the correct FFmpeg path
+        original_which = shutil.which
+
+        def patched_which(cmd, *args, **kwargs):
+            if cmd == "ffmpeg":
+                return ffmpeg_path
+            return original_which(cmd, *args, **kwargs)
+
+        shutil.which = patched_which  # Apply the patch
