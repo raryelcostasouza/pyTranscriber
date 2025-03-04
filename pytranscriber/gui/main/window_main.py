@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_window(object):
     def setupUi(self, window):
         window.setObjectName("window")
-        window.resize(1045, 597)
+        window.resize(1045, 610)
         self.centralwidget = QtWidgets.QWidget(window)
         self.centralwidget.setObjectName("centralwidget")
         self.bSelectMedia = QtWidgets.QPushButton(self.centralwidget)
@@ -56,7 +56,7 @@ class Ui_window(object):
         self.bRemoveFile.setGeometry(QtCore.QRect(10, 50, 141, 34))
         self.bRemoveFile.setObjectName("bRemoveFile")
         self.labelProgressFileIndex = QtWidgets.QLabel(self.centralwidget)
-        self.labelProgressFileIndex.setGeometry(QtCore.QRect(30, 350, 131, 41))
+        self.labelProgressFileIndex.setGeometry(QtCore.QRect(20, 500, 131, 41))
         self.labelProgressFileIndex.setText("")
         self.labelProgressFileIndex.setObjectName("labelProgressFileIndex")
         self.bCancel = QtWidgets.QPushButton(self.centralwidget)
@@ -178,7 +178,7 @@ class Ui_window(object):
 
     def retranslateUi(self, window):
         _translate = QtCore.QCoreApplication.translate
-        window.setWindowTitle(_translate("window", "pyTranscriber v2.0 BETA - 25/01/2024"))
+        window.setWindowTitle(_translate("window", "pyTranscriber v2.0 RC_1 - 04/03/2025"))
         self.bSelectMedia.setText(_translate("window", "Select file(s)"))
         self.bConvert.setText(_translate("window", "Transcribe Audio / Generate Subtitles"))
         self.bOpenOutputFolder.setText(_translate("window", "Open Output Folder"))
