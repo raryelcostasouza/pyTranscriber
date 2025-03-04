@@ -16,9 +16,9 @@ protobuf==3.18.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pyparsing==2.4.7
-PyQt5==5.15.4
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.9.0
+pyqt5==5.15.10
+#pyqt5-qt5==5.15.10
+pyqt5-sip==12.13.0
 pysrt==1.1.2
 requests==2.26.0
 requests-oauthlib==1.3.0
@@ -29,3 +29,5 @@ urllib3==1.26.7
 Nuitka
 orderedset
 zstandard
+openai-whisper
+pyinstaller
