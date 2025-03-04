@@ -1,3 +1,5 @@
+from pathlib import PurePath
+
 from pytranscriber.gui.message_util import MessageUtil
 import sqlite3
 
@@ -11,12 +13,18 @@ class CtrDB:
             return self.conn.cursor()
         else:
             try:
-                self.conn = sqlite3.connect('pytranscriber.sqlite')
+                local_program_path = PurePath(__file__).parent.parent.parent.joinpath('pytranscriber.sqlite')
+                str_local_program_path = str(local_program_path)
+
+
+
+                self.conn = sqlite3.connect(str_local_program_path)
                 cur = self.conn.cursor()
+
                 return cur
             except Exception as ex:
-                MessageUtil.show_error_message(str(ex), self.DB_ERROR)
-                return None
+                MessageUtil.show_error_message("ConnectDB" + str(ex), self.DB_ERROR)
+                exit(1)
 
     def close(self):
         self.conn.close()
@@ -24,11 +32,14 @@ class CtrDB:
 
     def _load_one_row(self, table_name):
         cur = self.connect()
+        if cur is None:
+            exit(1)
+
         try:
             cur.execute('SELECT * FROM ' + table_name)
             return cur.fetchone()
         except sqlite3.Error as e:
-            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+            MessageUtil.show_error_message("LoadOneRow " + str(e), self.DB_ERROR)
             return None
 
     def _save_single_column(self, query, value):
@@ -37,7 +48,7 @@ class CtrDB:
             cur.execute(query,(value,))
             self.conn.commit()
         except sqlite3.Error as e:
-            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+            MessageUtil.show_error_message("SaveSingleColumn " + str(e), self.DB_ERROR)
         self.close()
 
     def _truncate_table(self, table_name):
@@ -46,7 +57,7 @@ class CtrDB:
             cur.execute('DELETE FROM ' + table_name)
             self.conn.commit()
         except sqlite3.Error as e:
-            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+            MessageUtil.show_error_message("TruncateTable " + str(e), self.DB_ERROR)
         self.close()
 
     def load_last_language(self):
@@ -62,7 +73,7 @@ class CtrDB:
                         (language,))
             self.conn.commit()
         except sqlite3.Error as e:
-            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+            MessageUtil.show_error_message("SaveLastLanguage " + str(e), self.DB_ERROR)
         self.close()
 
     def load_proxy(self):
@@ -79,5 +90,5 @@ class CtrDB:
             self.conn.commit()
             MessageUtil.show_info_message('Proxy address saved successfully', 'Proxy settings saved')
         except sqlite3.Error as e:
-            MessageUtil.show_error_message(str(e), self.DB_ERROR)
+            MessageUtil.show_error_message("SaveProxy " + str(e), self.DB_ERROR)
         self.close()
