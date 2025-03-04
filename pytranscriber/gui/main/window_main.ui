@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1045</width>
-    <height>597</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pyTranscriber v2.0 BETA - 25/01/2024</string>
+   <string>pyTranscriber v2.0 RC_1 - 04/03/2025</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="bSelectMedia">
@@ -159,8 +159,8 @@
    <widget class="QLabel" name="labelProgressFileIndex">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>350</y>
+      <x>20</x>
+      <y>500</y>
       <width>131</width>
       <height>41</height>
      </rect>
