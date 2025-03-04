@@ -2,12 +2,8 @@ from abc import ABC, abstractmethod
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
 from pathlib import Path
-from pytranscriber.util.srtparser import SRTParser
-from pytranscriber.util.util import MyUtil
-from pytranscriber.control.ctr_autosub import Ctr_Autosub
 from pytranscriber.control.ctr_engine import CtrEngine
 import os
-
 
 class ThreadExecGeneric(QThread):
     signalLockGUI = pyqtSignal()
@@ -27,6 +23,7 @@ class ThreadExecGeneric(QThread):
 
     def _loopSelectedFiles(self):
         self.signalLockGUI.emit()
+        #MessageUtil.show_info_message("loop selected files")
 
         langCode = self.obj_transcription_parameters.langCode
 
@@ -46,6 +43,7 @@ class ThreadExecGeneric(QThread):
                 #does not continue the loop if user clicked cancel button
                 if not CtrEngine.is_operation_canceled():
                     self._updateProgressFileYofN(i, nFiles)
+                    #MessageUtil.show_info_message("run engine for media")
                     self._run_engine_for_media(i, langCode)
 
             #if operation is canceled does not clear the file list
