@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox
 class MessageUtil:
 
     @staticmethod
-    def show_info_message(info_msg, title):
+    def show_info_message(info_msg, title=""):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
 
@@ -13,7 +13,7 @@ class MessageUtil:
         msg.exec()
 
     @staticmethod
-    def show_error_message(error_msg, title):
+    def show_error_message(error_msg, title="Error"):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
 
