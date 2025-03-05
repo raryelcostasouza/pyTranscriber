@@ -47,7 +47,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install nuitka
+          pip install pyinstaller
      
       - name: Verificar existência do diretório assets do whisper
         run: |
@@ -60,17 +60,16 @@ jobs:
             exit 1
           }
           
-      - name: Compile with Nuitka
+      - name: Compile with pyInstaller
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
-          nuitka `
-          --enable-plugin=pyqt5 `
-          --include-data-files="$ffmpegPath=ffmpeg.exe" `
-          --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
-          --include-package-data="whisper:assets/*=whisper/assets" `
-          main.py `
+          pyinstaller main.py `
+          --path=$pwd `
           --onefile `
-          --disable-console
+          --add-binary "$ffmpegPath;." `
+          --add-binary="pytranscriber.sqlite;." \
+          --add-data "pytranscriber/gui/*.qm;pytranscriber/gui/" `
+          --add-data "$assetsPath;whisper/assets"
 
       - name: Upload built executable
         uses: actions/upload-artifact@v4
