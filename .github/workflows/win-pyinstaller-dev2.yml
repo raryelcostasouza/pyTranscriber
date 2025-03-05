@@ -1,0 +1,91 @@
+on:
+  push:
+    branches:
+      - main
+      - dev-2.0
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+     
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release  # Specify the desired FFmpeg version
+          architecture: x64 
+      - name: Add FFmpeg to PATH
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          $env:Path += ";$($ffmpegPath.Substring(0, $ffmpegPath.LastIndexOf('\')))"
+          $ffmpegPath 
+        shell: pwsh
+          
+      - name: Verify FFmpeg installation
+        run: |
+          where ffmpeg
+          ffmpeg -version 
+          
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv .venv
+     
+      - name: Activate virtual environment
+        run: |
+          .\.venv\Scripts\Activate
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+     
+      - name: Verificar existência do diretório assets do whisper
+        run: |
+          $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
+          $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
+          if (Test-Path $assetsPath) {
+            Write-Host "O diretório 'assets' existe em: $assetsPath"
+          } else {
+            Write-Host "O diretório 'assets' NÃO existe."
+            exit 1
+          }
+          
+      - name: Compile with pyInstaller
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          pyinstaller main.py `
+          --path=$pwd `
+          --onefile `
+          --add-binary="$ffmpegPath;." `
+          --add-binary="pytranscriber.sqlite;." \
+          --add-data "pytranscriber/gui/*.qm;pytranscriber/gui/" `
+          --add-data "$assetsPath;whisper/assets"
+
+      - name: Upload built executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyTranscriber
+          path: ./dist/main.exe  # Adjust this path if Nuitka outputs elsewhere
+
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download built executable
+        uses: actions/download-artifact@v4
+        with:
+          name: pyTranscriber
+          path: ./output
+
+      - name: List downloaded files
+        run: dir ./output
