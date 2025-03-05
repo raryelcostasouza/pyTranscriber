@@ -22,6 +22,7 @@ jobs:
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
           $env:Path += ";$($ffmpegPath.Substring(0, $ffmpegPath.LastIndexOf('\')))"
+          $ffmpegPath 
         shell: pwsh
           
       - name: Verify FFmpeg installation
@@ -50,7 +51,7 @@ jobs:
 
       - name: Compile with Nuitka
         run: |
-          $ffmpegPath = (where ffmpeg).Trim()
+          $ffmpegPath = (Get-Command ffmpeg).Source
           nuitka `
           --enable-plugin=pyqt5 `
           --include-data-files="$ffmpegPath=ffmpeg.exe" `
