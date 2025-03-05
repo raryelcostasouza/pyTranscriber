@@ -68,8 +68,8 @@ jobs:
           --onefile `
           --add-binary="$ffmpegPath;." `
           --add-binary="pytranscriber.sqlite;." \
-          --add-data "pytranscriber/gui/*.qm;pytranscriber/gui/" `
-          --add-data "$assetsPath;whisper/assets"
+          --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
+          --add-data="$assetsPath;whisper/assets"
 
       - name: Upload built executable
         uses: actions/upload-artifact@v4
