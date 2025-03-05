@@ -67,7 +67,7 @@ jobs:
             --path=$pwd `
             --onefile `
             --add-binary="$ffmpegPath;." `
-            --add-binary="pytranscriber.sqlite;." \
+            --add-binary="pytranscriber.sqlite;." `
             --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
             --add-data="$assetsPath;whisper/assets"
 
