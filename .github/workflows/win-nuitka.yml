@@ -24,7 +24,7 @@ jobs:
 
       - name: Activate virtual environment
         run: |
-          .\.venv\Scripts\activate
+          .\.venv\Scripts\Activate
 
       - name: Install dependencies
         run: |
@@ -32,11 +32,19 @@ jobs:
           pip install -r requirements.txt
           pip install nuitka
 
+      - name: Install FFmpeg
+        run: |
+          winget install --id Gyan.FFmpeg -e
+
+      - name: Verify FFmpeg installation
+        run: |
+          ffmpeg -version
+
       - name: Compile with Nuitka
         run: |
           nuitka `
           --enable-plugin=pyqt5 `
-          --include-data-files="ffmpeg.exe=./" `
+          --include-data-files="ffmpeg.exe=C:/Windows/System32/ffmpeg.exe" `
           --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
           --include-data-dir="venv/lib/python3.8/site-packages/whisper/assets=whisper/assets" `
           main.py `
@@ -47,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber
-          path: ./dist/main.exe  # Adjust this path if Nuitka outputs somewhere else
+          path: ./dist/main.exe  # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: windows-latest
