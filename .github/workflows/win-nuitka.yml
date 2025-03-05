@@ -1,0 +1,44 @@
+name: Build Windows Executable with Nuitka
+
+on:
+  push:
+    branches:
+      - main
+      - dev-2.0
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Compile with Nuitka
+        run: |
+          nuitka ^
+          --enable-plugin=pyqt5 ^
+          --include-data-files="ffmpeg.exe=./" ^
+          --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" ^
+          --include-data-dir="venv/lib/python3.8/site-packages/whisper/assets=whisper/assets" ^
+          main.py ^
+          --onefile ^
+          --disable-console
+
+      - name: Upload built executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: pyTranscriber.exe
+          path: ./main.exe  # Adjust if Nuitka outputs a different filename
