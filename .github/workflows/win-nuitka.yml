@@ -21,19 +21,19 @@ jobs:
       - name: Set up Python virtual environment
         run: |
           python -m venv .venv
-
+     
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+      
       - name: Activate virtual environment
         run: |
           .\.venv\Scripts\Activate
-
+      
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install nuitka
-
-      - name: Set up FFmpeg
-        uses: actions/setup-ffmpeg@v3
 
       - name: Verify FFmpeg installation
         run: |
