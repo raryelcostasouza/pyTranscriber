@@ -1,19 +1,17 @@
 # pyTranscriber
 
 [![Tip Me via PayPal](https://img.shields.io/badge/PayPal-tip%20me-1462ab.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YHB854YHPJCU8&item_name=Donation+pyTranscriber&currency_code=BRL)
-[![Tip Me via Bitcoin](https://img.shields.io/badge/Bitcoin-tip%20me-f7931a.svg?logo=bitcoin)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/btc.png)
-[![Tip Me via Ethereum](https://img.shields.io/badge/Ethereum-tip%20me-1462ab.svg?logo=ethereum)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/eth.png)
-[![Tip Me via Litecoin](https://img.shields.io/badge/Litecoin-tip%20me-f7931a.svg?logo=litecoin)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/ltc.png)
-[![Tip Me via BNB](https://img.shields.io/badge/BNB-tip%20me-1462ab.svg?logo=binance)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/bnb.png)
-[![Tip Me via Dogecoin](https://img.shields.io/badge/Dogecoin-tip%20me-f7931a.svg?logo=dogecoin)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/doge.png)
+[![Tip Me via Bitcoin Lightning](https://img.shields.io/badge/Bitcoin%20Lightning-tip%20me-f7931a.svg?logo=lightning)](https://github.com/raryelcostasouza/pyTranscriber/raw/master/doc/lightning.jpeg)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A6AIR3D)
 
 MOVED TO NEW WEBSITE - <a href="https://pytranscriber.github.io">https://pytranscriber.github.io</a>
 
-More than 500.000 downloads since first version. Thanks!
+More than 640k downloads since first version. Thanks!
 Check live statistics at <a href="https://somsubhra.github.io/github-release-stats/?username=raryelcostasouza&repository=pyTranscriber&page=1&per_page=30">GitHub Release Stats</a>
 
 # Thanks to the people helping funding
-Yooki Adair, Adrien Jarton, YP, JOY_EASY, RodrigoRios, Zhou Mi, Dongmei Chen, Jung Yi Hung, Tah Kwang Tomas Tso
+Jixing Zhao, Narsu Narsu, Lucas Thorn, Soonkj Jung, Sergio Moreno, Yooki Adair, Adrien Jarton, YP, JOY_EASY, RodrigoRios, Zhou Mi, Dongmei Chen, Jung Yi Hung, Tah Kwang Tomas Tso
 
 # UPDATE - v1.9 - 22/12/2022
 1. Windows/Linux version compiled with Nuitka (https://github.com/Nuitka/Nuitka) instead of pyInstaller to improve stability and fix random crashes while transcribing audio. If you still experience issues please report at Issues section.
