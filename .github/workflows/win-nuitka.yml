@@ -39,7 +39,7 @@ jobs:
         run: dir ./dist  # Ensure the .exe file is in the dist folder
 
       - name: Upload built executable
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber
           path: ./dist/main.exe  # Adjust this path if Nuitka outputs somewhere else
@@ -49,7 +49,7 @@ jobs:
     needs: build
     steps:
       - name: Download built executable
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pyTranscriber  # This should match the upload name
           path: ./output
