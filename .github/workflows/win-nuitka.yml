@@ -32,9 +32,8 @@ jobs:
           pip install -r requirements.txt
           pip install nuitka
 
-      - name: Install FFmpeg
-        run: |
-          winget install --id Gyan.FFmpeg -e
+      - name: Set up FFmpeg
+        uses: actions/setup-ffmpeg@v1
 
       - name: Verify FFmpeg installation
         run: |
@@ -44,7 +43,7 @@ jobs:
         run: |
           nuitka `
           --enable-plugin=pyqt5 `
-          --include-data-files="ffmpeg.exe=C:/Windows/System32/ffmpeg.exe" `
+          --include-data-files="ffmpeg.exe=ffmpeg.exe" `
           --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
           --include-data-dir="venv/lib/python3.8/site-packages/whisper/assets=whisper/assets" `
           main.py `
