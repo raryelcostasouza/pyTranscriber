@@ -66,7 +66,7 @@ jobs:
           nuitka `
             --assume-yes-for-downloads `
             --enable-plugin=pyqt5 `
-            --include-data-files="pytranscriber.sqlite=."" `
+            --include-data-files="pytranscriber.sqlite=." `
             --include-data-files="$ffmpegPath=ffmpeg.exe" `
             --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
             --include-package-data="whisper:assets/*=whisper/assets" `
