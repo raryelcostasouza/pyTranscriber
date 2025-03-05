@@ -1,5 +1,3 @@
-name: Build Windows Executable with Nuitka
-
 on:
   push:
     branches:
@@ -37,11 +35,14 @@ jobs:
           --onefile ^
           --disable-console
 
+      - name: List files in dist
+        run: dir ./dist  # Ensure the .exe file is in the dist folder
+
       - name: Upload built executable
         uses: actions/upload-artifact@v3
         with:
           name: pyTranscriber
-          path: ./main.exe  # Adjust if Nuitka outputs a different filename
+          path: ./dist/main.exe  # Adjust this path if Nuitka outputs somewhere else
 
   download:
     runs-on: windows-latest
@@ -50,8 +51,8 @@ jobs:
       - name: Download built executable
         uses: actions/download-artifact@v3
         with:
-          name: pyTranscriber
+          name: pyTranscriber  # This should match the upload name
           path: ./output
 
       - name: List downloaded files
-        run: dir ./output
+        run: dir ./output  # Verify the download path
