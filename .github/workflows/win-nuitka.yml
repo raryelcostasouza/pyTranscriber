@@ -18,16 +18,16 @@ jobs:
         with:
           ffmpeg-version: release  # Specify the desired FFmpeg version
           architecture: x64 
-
+      - name: Add FFmpeg to PATH
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          $env:Path += ";$($ffmpegPath.Substring(0, $ffmpegPath.LastIndexOf('\')))"
+        shell: pwsh
+          
       - name: Verify FFmpeg installation
         run: |
           where ffmpeg
-          ffmpeg -version
-          
-      - name: Set FFmpeg path
-        run: |
-          $ffmpegPath = (where ffmpeg).Trim()
-          echo "FFMPEG_PATH=$ffmpegPath" >> $GITHUB_ENV 
+          ffmpeg -version 
           
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
@@ -50,9 +50,10 @@ jobs:
 
       - name: Compile with Nuitka
         run: |
+          $ffmpegPath = (where ffmpeg).Trim()
           nuitka `
           --enable-plugin=pyqt5 `
-          --include-data-files="$FFMPEG_PATH=ffmpeg.exe" `
+          --include-data-files="$ffmpegPath=ffmpeg.exe" `
           --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
           --include-data-dir=".venv/Lib/python3.8/site-packages/whisper/assets=whisper/assets" `
           main.py `
