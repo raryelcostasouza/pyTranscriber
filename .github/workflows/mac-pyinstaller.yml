@@ -1,0 +1,81 @@
+on:
+ push:
+  branches:
+    - main
+    - dev-2.0
+
+jobs:
+  build:
+    runs-on: macos-arm64  # Use macOS ARM64 runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+     
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release
+          architecture: arm64  # Updated to arm64 for macOS ARM architecture
+      
+      - name: Verify FFmpeg installation
+        run: |
+          which ffmpeg
+          ffmpeg -version 
+      
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv .venv
+
+      - name: Activate virtual environment and install dependencies
+        run: |
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+     
+      - name: Verify existence of Whisper assets directory
+        run: |
+          ASSETS_PATH=$(python -c "import whisper; import os; print(os.path.join(os.path.dirname(whisper.__file__), 'assets'))")
+          if [ -d "$ASSETS_PATH" ]; then
+            echo "The 'assets' directory exists at: $ASSETS_PATH"
+            echo "ASSETS_PATH=$ASSETS_PATH" >> $GITHUB_ENV
+          else
+            echo "The 'assets' directory does NOT exist."
+            exit 1
+          fi
+      
+      - name: Compile with pyInstaller
+        run: |
+          source .venv/bin/activate
+          FFMPPEG_PATH=$(which ffmpeg)
+          pyinstaller main.py \
+            --onefile \
+            --add-binary="$FFMPPEG_PATH:." \
+            --add-binary="pytranscriber.sqlite:." \
+            --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
+            --add-data="$ASSETS_PATH:whisper/assets"
+
+      - name: Upload built executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyTranscriber
+          path: ./dist/main.app  # Path adjusted for macOS
+
+  download:
+    runs-on: macos-arm64  # macOS ARM64 runner for downloading
+    needs: build
+    steps:
+      - name: Download built executable
+        uses: actions/download-artifact@v4
+        with:
+          name: pyTranscriber
+          path: ./output
+
+      - name: List downloaded files
+        run: ls -la ./output
