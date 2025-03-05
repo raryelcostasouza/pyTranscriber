@@ -64,12 +64,12 @@ jobs:
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
           pyinstaller main.py `
-          --path=$pwd `
-          --onefile `
-          --add-binary="$ffmpegPath;." `
-          --add-binary="pytranscriber.sqlite;." \
-          --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
-          --add-data="$assetsPath;whisper/assets"
+            --path=$pwd `
+            --onefile `
+            --add-binary="$ffmpegPath;." `
+            --add-binary="pytranscriber.sqlite;." \
+            --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
+            --add-data="$assetsPath;whisper/assets"
 
       - name: Upload built executable
         uses: actions/upload-artifact@v4
