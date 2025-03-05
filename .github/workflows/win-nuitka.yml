@@ -48,7 +48,18 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install nuitka
-
+     
+      - name: Verificar existência do diretório assets do whisper
+        run: |
+          $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
+          $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
+          if (Test-Path $assetsPath) {
+            Write-Host "O diretório 'assets' existe em: $assetsPath"
+          } else {
+            Write-Host "O diretório 'assets' NÃO existe."
+            exit 1
+          }
+          
       - name: Compile with Nuitka
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
@@ -56,7 +67,7 @@ jobs:
           --enable-plugin=pyqt5 `
           --include-data-files="$ffmpegPath=ffmpeg.exe" `
           --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
-          --include-data-dir=".venv/Lib/python3.8/site-packages/whisper/assets=whisper/assets" `
+          --include-package-data="whisper:assets/*=whisper/assets" `
           main.py `
           --onefile `
           --disable-console
