@@ -13,6 +13,11 @@ Check live statistics at <a href="https://somsubhra.github.io/github-release-sta
 # Thanks to the people helping funding
 Jixing Zhao, Narsu Narsu, Lucas Thorn, Soonkj Jung, Sergio Moreno, Yooki Adair, Adrien Jarton, YP, JOY_EASY, RodrigoRios, Zhou Mi, Dongmei Chen, Jung Yi Hung, Tah Kwang Tomas Tso
 
+# UPDATE - v2.0-RC_1 - 04/03/2025
+1. Added support for <a hfref="https://openai.com/index/whisper/">openAI Whisper</a> with local processing of media files as alternative to Google Speech API (where all media file is uploaded to Google servers for processing)
+2. Added saving/load settings to sqlite local db
+
+
 # UPDATE - v1.9 - 22/12/2022
 1. Windows/Linux version compiled with Nuitka (https://github.com/Nuitka/Nuitka) instead of pyInstaller to improve stability and fix random crashes while transcribing audio. If you still experience issues please report at Issues section.
 2. Support for Ogg/ogv/mkv/webm media files on file selector
