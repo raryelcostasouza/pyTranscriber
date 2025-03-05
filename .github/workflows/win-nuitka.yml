@@ -15,12 +15,15 @@ jobs:
      
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release  # Specify the desired FFmpeg version
+          architecture: x64 
 
       - name: Verify FFmpeg installation
         run: |
-          ffmpeg -version
           where ffmpeg
-      
+          ffmpeg -version
+          
       - name: Set FFmpeg path
         run: |
           $ffmpegPath = (where ffmpeg).Trim()
