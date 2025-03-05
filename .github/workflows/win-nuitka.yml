@@ -12,7 +12,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+     
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
 
+      - name: Verify FFmpeg installation
+        run: |
+          ffmpeg -version
+          where ffmpeg
+      
+      - name: Set FFmpeg path
+        run: |
+          $ffmpegPath = (where ffmpeg).Trim()
+          echo "FFMPEG_PATH=$ffmpegPath" >> $GITHUB_ENV 
+          
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
@@ -22,9 +35,6 @@ jobs:
         run: |
           python -m venv .venv
      
-      - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3.1
-      
       - name: Activate virtual environment
         run: |
           .\.venv\Scripts\Activate
@@ -35,17 +45,13 @@ jobs:
           pip install -r requirements.txt
           pip install nuitka
 
-      - name: Verify FFmpeg installation
-        run: |
-          ffmpeg -version
-
       - name: Compile with Nuitka
         run: |
           nuitka `
           --enable-plugin=pyqt5 `
-          --include-data-files="ffmpeg.exe=ffmpeg.exe" `
+          --include-data-files="$FFMPEG_PATH=ffmpeg.exe" `
           --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
-          --include-data-dir="venv/lib/python3.8/site-packages/whisper/assets=whisper/assets" `
+          --include-data-dir=".venv/Lib/python3.8/site-packages/whisper/assets=whisper/assets" `
           main.py `
           --onefile `
           --disable-console
