@@ -55,6 +55,7 @@ jobs:
           $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
           if (Test-Path $assetsPath) {
             Write-Host "O diretório 'assets' existe em: $assetsPath"
+            echo "ASSETS_PATH=$assetsPath" >> $env:GITHUB_ENV
           } else {
             Write-Host "O diretório 'assets' NÃO existe."
             exit 1
@@ -63,13 +64,14 @@ jobs:
       - name: Compile with pyInstaller
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
+          ${env:ASSETS_PATH}
           pyinstaller main.py `
             --path=$pwd `
             --onefile `
             --add-binary="$ffmpegPath;." `
             --add-binary="pytranscriber.sqlite;." `
             --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
-            --add-data="$assetsPath;whisper/assets"
+            --add-data="${env:ASSETS_PATH};whisper/assets"
 
       - name: Upload built executable
         uses: actions/upload-artifact@v4
