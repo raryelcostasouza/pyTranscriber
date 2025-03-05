@@ -68,6 +68,7 @@ jobs:
           pyinstaller main.py `
             --path=$pwd `
             --onefile `
+            --hidden-import=sip 
             --add-binary="$ffmpegPath;." `
             --add-binary="pytranscriber.sqlite;." `
             --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
