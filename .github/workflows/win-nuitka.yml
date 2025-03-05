@@ -40,5 +40,18 @@ jobs:
       - name: Upload built executable
         uses: actions/upload-artifact@v3
         with:
-          name: pyTranscriber.exe
+          name: pyTranscriber
           path: ./main.exe  # Adjust if Nuitka outputs a different filename
+
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download built executable
+        uses: actions/download-artifact@v3
+        with:
+          name: pyTranscriber
+          path: ./output
+
+      - name: List downloaded files
+        run: dir ./output
