@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-arm64  # Use macOS ARM64 runner
+    runs-on: macos-14  # Use macOS ARM64 runner
 
     steps:
       - name: Checkout repository
@@ -16,7 +16,6 @@ jobs:
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
           ffmpeg-version: release
-          architecture: arm64  # Updated to arm64 for macOS ARM architecture
       
       - name: Verify FFmpeg installation
         run: |
@@ -68,7 +67,7 @@ jobs:
           path: ./dist/main.app  # Path adjusted for macOS
 
   download:
-    runs-on: macos-arm64  # macOS ARM64 runner for downloading
+    runs-on: macos-14  # macOS ARM64 runner for downloading
     needs: build
     steps:
       - name: Download built executable
