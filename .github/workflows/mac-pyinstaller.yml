@@ -41,6 +41,7 @@ jobs:
      
       - name: Verify existence of Whisper assets directory
         run: |
+          source .venv/bin/activate  # Activate the virtual environment
           ASSETS_PATH=$(python -c "import whisper; import os; print(os.path.join(os.path.dirname(whisper.__file__), 'assets'))")
           if [ -d "$ASSETS_PATH" ]; then
             echo "The 'assets' directory exists at: $ASSETS_PATH"
