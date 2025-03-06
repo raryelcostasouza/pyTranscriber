@@ -13,17 +13,16 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.10", "3.12"]  # Paraleliza builds para cada versão do Python
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-     
+      
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
           ffmpeg-version: release
           architecture: x64 
-      
+
       - name: Verify FFmpeg installation
         run: |
           where ffmpeg
@@ -34,22 +33,23 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Create and activate virtual environment
+      - name: Create and activate virtual environment for Python ${{ matrix.python-version }}
         run: |
-          python -m venv .venv
-          .\.venv\Scripts\Activate
+          python -m venv .venv-${{ matrix.python-version }}
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
         shell: pwsh
 
-      - name: Install dependencies
+      - name: Install dependencies for Python ${{ matrix.python-version }}
         run: |
-          .\.venv\Scripts\Activate
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
+        shell: pwsh
 
-      - name: Verify whisper assets directory
+      - name: Verify whisper assets directory for Python ${{ matrix.python-version }}
         run: |
-          .\.venv\Scripts\Activate
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
           $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
           $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
           if (Test-Path $assetsPath) {
@@ -60,10 +60,10 @@ jobs:
             exit 1
           }
         shell: pwsh
-          
-      - name: Compile with PyInstaller
+
+      - name: Compile with PyInstaller for Python ${{ matrix.python-version }}
         run: |
-          .\.venv\Scripts\Activate
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
           $ffmpegPath = (Get-Command ffmpeg).Source
           pyinstaller main.py `
             --onefile `
@@ -73,7 +73,7 @@ jobs:
             --add-data="${env:ASSETS_PATH};whisper/assets"
         shell: pwsh
 
-      - name: Upload built executable
+      - name: Upload built executable for Python ${{ matrix.python-version }}
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber-${{ matrix.python-version }}
