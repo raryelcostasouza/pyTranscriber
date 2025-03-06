@@ -42,6 +42,7 @@ jobs:
       - name: Install dependencies for Python ${{ matrix.python-version }}
         run: |
           .\.venv-${{ matrix.python-version }}\Scripts\Activate
+          python -m ensurepip --upgrade
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
