@@ -19,6 +19,7 @@ from pytranscriber.util.srtparser import SRTParser
 from pytranscriber.util.util import MyUtil
 from pytranscriber.control.ctr_autosub import Ctr_Autosub
 import os
+import traceback
 
 
 class Thread_Exec_Autosub(QThread):
@@ -60,10 +61,15 @@ class Thread_Exec_Autosub(QThread):
         outputFileTXT = outputFiles[1]
 
         #run autosub
-        fOutput = Ctr_Autosub.generate_subtitles(source_path = sourceFile,
-                                    output = outputFileSRT,
-                                    src_language = langCode,
-                                    listener_progress = self.listenerProgress, proxies=self.objParamAutosub.proxies)
+        try:
+            fOutput = Ctr_Autosub.generate_subtitles(source_path = sourceFile,
+                                        output = outputFileSRT,
+                                        src_language = langCode,
+                                        listener_progress = self.listenerProgress, proxies=self.objParamAutosub.proxies)
+        except Exception as e:
+            error_msg = f"""Error! Unable to generate subtitles: {traceback.format_exc()}"""
+            self.signalErrorMsg.emit(error_msg)  # Emit the full traceback
+
         #if nothing was returned
         if not fOutput:
             self.signalErrorMsg.emit("Error! Unable to generate subtitles for file " + sourceFile + ".")
