@@ -25,6 +25,5 @@ rsa==4.7.2
 six==1.16.0
 uritemplate==3.0.1
 urllib3==2.2.2
-#orderedset
-zstandard
 openai-whisper
+platformdirs

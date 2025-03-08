@@ -25,6 +25,8 @@ from pytranscriber.gui.main.window_main import Ui_window
 from pytranscriber.gui.message_util import MessageUtil
 from pytranscriber.model.google_speech import Google_Speech
 from pytranscriber.model.whisper import Whisper
+from pathlib import Path
+from platformdirs import user_desktop_dir
 
 import os
 import sys
@@ -55,9 +57,14 @@ class ViewMain:
         self.__listenerSwitchEngine()
         self.__listenerProgress("", 0)
 
-        # default output folder at user desktop
-        userHome = Path.home()
-        pathOutputFolder = userHome / 'Desktop' / 'pyTranscriber'
+        # Get the user's Desktop directory
+        desktop_path = Path(user_desktop_dir())
+
+        # Define the output folder path
+        pathOutputFolder = desktop_path / 'pyTranscriber'
+
+        # Ensure the output folder exists
+        pathOutputFolder.mkdir(parents=True, exist_ok=True)
 
         self.objGUI.qleOutputFolder.setText(str(pathOutputFolder))
 
