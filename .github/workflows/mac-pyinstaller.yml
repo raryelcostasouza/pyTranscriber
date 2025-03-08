@@ -9,7 +9,8 @@ on:
 jobs:
   build:
     runs-on: macos-14  # Use macOS ARM64 runner
-
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,7 +21,7 @@ jobs:
         id: get_version
         run: |
           VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
           echo "Resolved version: $VERSION"
 
       - name: Setup FFmpeg
@@ -85,9 +86,6 @@ jobs:
         with:
           name: pyTranscriber-${{ env.VERSION }}
           path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Path adjusted for macOS
-    
-    outputs:
-      version: ${{ steps.get_version.outputs.VERSION }}  # Make version available for download job
       
   download:
     runs-on: macos-14  # macOS ARM64 runner for downloading
@@ -95,16 +93,12 @@ jobs:
     steps:
       - name: Output variables
         run: |
-          echo ${{ steps.get_version.outputs.VERSION }}
           echo ${{ env.VERSION }}
           echo ${{ needs.build.outputs.version }}
-          
-      
           
       - name: Download built executable
         uses: actions/download-artifact@v4
         with:
-          name: pyTranscriber-${{ needs.build.outputs.version }}
           path: ./output
 
       - name: List downloaded files
