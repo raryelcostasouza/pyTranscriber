@@ -87,22 +87,24 @@ jobs:
           path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Path adjusted for macOS
     
     outputs:
-      version: ${{ steps.get_version.outputs.version }}  # Make version available for download job
+      version: ${{ steps.get_version.outputs.VERSION }}  # Make version available for download job
       
   download:
     runs-on: macos-14  # macOS ARM64 runner for downloading
     needs: build
     steps:
-      - name: Get latest Git tag
+      - name: Output variables
         run: |
-            VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-            echo "Resolved version: $VERSION"
+          echo ${{ steps.get_version.outputs.VERSION }}
+          echo ${{ env.VERSION }}
+          echo ${{ needs.build.outputs.version }}
+          
+      
           
       - name: Download built executable
         uses: actions/download-artifact@v4
         with:
-          name: pyTranscriber-${{ env.VERSION }}
+          name: pyTranscriber-${{ needs.build.outputs.version }}
           path: ./output
 
       - name: List downloaded files
