@@ -1,4 +1,4 @@
-name: Build PyTranscriber
+name: Windows PyInstaller
 
 on:
   push:
@@ -71,7 +71,9 @@ jobs:
             --add-binary="$ffmpegPath;." `
             --add-binary="pytranscriber.sqlite;." `
             --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
-            --add-data="${env:ASSETS_PATH};whisper/assets"
+            --add-data="${env:ASSETS_PATH};whisper/assets" `
+            --clean
+
         shell: pwsh
 
       - name: Upload built executable for Python ${{ matrix.python-version }}
