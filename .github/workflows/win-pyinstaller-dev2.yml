@@ -22,11 +22,12 @@ jobs:
       - name: Get latest Git tag
         id: get_version
         run: |
-          for /f "tokens=*" %%i in ('git describe --tags --abbrev=0 2^>nul') do set VERSION=%%i
-          if not defined VERSION set VERSION=v0.1.0
-          echo VERSION=%VERSION% >> $env:GITHUB_ENV
-          echo Resolved version: %VERSION%
-        shell: cmd
+          $VERSION = git describe --tags --abbrev=0 2>$null
+          if (-not $VERSION) {
+            $VERSION = "v0.1.0"  # Default version if no tags are found
+          }
+          Write-Host "VERSION=$VERSION" | Out-File -Append -FilePath $env:GITHUB_ENV
+          Write-Host "Resolved version: $VERSION"
         
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
@@ -91,8 +92,8 @@ jobs:
       - name: Rename and zip the .app bundle with version number
         run: |
           cd dist
-          move /Y main.exe "pyTranscriber-${VERSION}.exe"
-          tar -a -cf "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}.exe"
+          move /Y main.exe pyTranscriber-${VERSION}.exe
+          tar -a -cf pyTranscriber-${VERSION}.zip pyTranscriber-${VERSION}.exe
         shell: cmd 
         
       - name: Upload built executable for Python ${{ matrix.python-version }}
