@@ -25,11 +25,6 @@ jobs:
           Write-Host "VERSION=$VERSION" | Out-File -Append -FilePath $env:GITHUB_ENV
           Write-Host "Resolved version: $VERSION"
 
-      - name: Assign version to variable
-        run: |
-          VERSION="${{ steps.get_version.outputs.tag }}"
-          echo "Version is $VERSION"
-
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
