@@ -17,9 +17,13 @@ jobs:
       
       - name: Get latest Git tag
         id: get_version
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        with:
-          fallback: v0.1.0  # Default version if no tags are found
+        run: |
+          $VERSION = git describe --tags --abbrev=0 2>$null
+          if (-not $VERSION) {
+            $VERSION = "v0.1.0"  # Default version if no tags are found
+          }
+          Write-Host "VERSION=$VERSION" | Out-File -Append -FilePath $env:GITHUB_ENV
+          Write-Host "Resolved version: $VERSION"
 
       - name: Assign version to variable
         run: |
