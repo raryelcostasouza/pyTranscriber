@@ -13,7 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all tags
+          fetch-depth: 1
+      
+      - name: Fetch all tags
+        run: git fetch --tags origin
 
       - name: Get latest Git tag
         id: get_version
@@ -91,15 +94,15 @@ jobs:
       - name: Rename and zip the .app bundle with version number
         run: |
           cd dist
-          move /Y main.exe "pyTranscriber-${VERSION}.exe"
-          tar -a -cf "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}.exe"
+          move /Y main.exe pyTranscriber-${VERSION}.exe
+          tar -a -cf pyTranscriber-${VERSION}.zip pyTranscriber-${VERSION}.exe
         shell: cmd
      
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: "pyTranscriber-${VERSION}"
-          path: "./dist/pyTranscriber-${VERSION}.zip"  # Adjust this path if Nuitka outputs elsewhere
+          name: pyTranscriber-${VERSION}
+          path: ./dist/pyTranscriber-${VERSION}.zip # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: windows-latest
