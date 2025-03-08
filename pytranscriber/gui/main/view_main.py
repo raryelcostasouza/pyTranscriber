@@ -117,7 +117,7 @@ class ViewMain:
 
             QtWidgets.QApplication.instance().installTranslator(self.objGUI.trans)
         else:
-            QtWidgets.QApplication.instance().removeTranslator(self.trans)
+            QtWidgets.QApplication.instance().removeTranslator(self.objGUI.trans)
 
         # refresh UI with translation
         self.objGUI.retranslateUi(self.objGUI.mainWindow)

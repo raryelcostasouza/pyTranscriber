@@ -202,7 +202,7 @@ class Ui_window(object):
         self.menuLanguage.setTitle(_translate("window", "&Language"))
         self.actionLicense.setText(_translate("window", "&License"))
         self.actionDonation.setText(_translate("window", "&Funding at Github Sponsors"))
-        self.actionAbout_pyTranscriber.setText(_translate("window", "&About pyTranscriber"))
+        self.actionAbout_pyTranscriber.setText(_translate("window", "&More about pyTranscriber"))
         self.actionProxy.setText(_translate("window", "&Proxy"))
         self.actionProxy.setToolTip(_translate("window", "Proxy setting"))
         self.actionEnglish.setText(_translate("window", "English"))
