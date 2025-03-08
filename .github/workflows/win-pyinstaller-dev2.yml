@@ -15,7 +15,9 @@ jobs:
         python-version: ["3.8", "3.10", "3.12"]  # Paraleliza builds para cada versão do Python
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all tags
       
       - name: Get latest Git tag
         id: get_version
