@@ -12,12 +12,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          for /f "tokens=*" %%i in ('git describe --tags --abbrev=0 2^>nul') do set VERSION=%%i
+          if not defined VERSION set VERSION=v0.1.0
+          echo VERSION=%VERSION% >> $env:GITHUB_ENV
+          echo Resolved version: %VERSION%
+        shell: cmd
+
      
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
           ffmpeg-version: release  # Specify the desired FFmpeg version
           architecture: x64 
+          
       - name: Add FFmpeg to PATH
         run: |
           $ffmpegPath = (Get-Command ffmpeg).Source
@@ -74,12 +85,19 @@ jobs:
             --onefile `
             --output-dir=dist `
             --windows-console-mode=disable
-
+      
+      - name: Rename and zip the .app bundle with version number
+        run: |
+          cd dist
+          move /Y main.exe "pyTranscriber-${VERSION}.exe"
+          tar -a -cf "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}.exe"
+        shell: cmd
+     
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber
-          path: ./dist/main.exe  # Adjust this path if Nuitka outputs elsewhere
+          name: "pyTranscriber-${VERSION}"
+          path: "./dist/pyTranscriber-${VERSION}.zip"  # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: windows-latest
@@ -88,7 +106,6 @@ jobs:
       - name: Download built executable
         uses: actions/download-artifact@v4
         with:
-          name: pyTranscriber
           path: ./output
 
       - name: List downloaded files
