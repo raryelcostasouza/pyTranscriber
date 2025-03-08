@@ -57,6 +57,7 @@ jobs:
           FFMPPEG_PATH=$(which ffmpeg)
           pyinstaller main.py \
             --windowed \
+            --path="$(pwd)" \
             --add-binary="$FFMPPEG_PATH:." \
             --add-binary="pytranscriber.sqlite:." \
             --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
