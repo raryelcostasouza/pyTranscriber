@@ -53,16 +53,26 @@ class MyUtil(object):
 
     @staticmethod
     def send_request(url,
-                     n_retries=4,
+                     n_retries=0,
                      backoff_factor=0.9,
-                     status_codes=[504, 503, 502, 500, 429], proxies=None, headers=None):
+                     status_codes=[504, 503, 502, 500, 429, 302, 408, 425],
+                     proxies=None,
+                     headers=None):
         sess = requests.Session()
         retries = Retry(connect=n_retries, backoff_factor=backoff_factor,
                         status_forcelist=status_codes)
         sess.mount("https://", HTTPAdapter(max_retries=retries))
         sess.mount("http://", HTTPAdapter(max_retries=retries))
-        response = sess.get(url)
-        return response.status_code
+        try:
+            response = sess.get(url, timeout=5, proxies=proxies, headers=headers)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            return response.status_code
+        except requests.Timeout:
+            print("The request timed out")
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+        return -1
+
 
     @staticmethod
     def percentage(currentval, maxval):
