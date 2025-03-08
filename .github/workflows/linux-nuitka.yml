@@ -17,7 +17,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-     
+        
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Resolved version: $VERSION"
+      
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
@@ -71,11 +78,18 @@ jobs:
             main.py \
             --onefile \
             --output-dir=dist 
+            
+      - name: Zip the binary with version number
+        run: |
+          cd dist
+          mv main "pyTranscriber-${VERSION}"
+          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}"  
+      
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber
-          path: ./dist/main  # Adjust this path if Nuitka outputs elsewhere
+          name: pyTranscriber-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: ubuntu-22.04
@@ -84,7 +98,6 @@ jobs:
       - name: Download built executable
         uses: actions/download-artifact@v4
         with:
-          name: pyTranscriber
           path: ./output
 
       - name: List downloaded files
