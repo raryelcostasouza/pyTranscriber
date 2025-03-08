@@ -59,6 +59,7 @@ jobs:
 
       - name: Compile with Nuitka
         run: |
+          source .venv/bin/activate
           ffmpegPath=$(which ffmpeg)
           nuitka \
             --assume-yes-for-downloads \
