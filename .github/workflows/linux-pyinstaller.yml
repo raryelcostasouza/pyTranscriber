@@ -82,8 +82,8 @@ jobs:
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber
-          path: ./dist/main  # Caminho ajustado para Linux
+          name: pyTranscriber-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Caminho ajustado para Linux
 
   download:
     runs-on: ubuntu-22.04
