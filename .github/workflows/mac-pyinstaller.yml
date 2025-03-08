@@ -61,12 +61,16 @@ jobs:
             --add-binary="pytranscriber.sqlite:." \
             --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
             --add-data="$ASSETS_PATH:whisper/assets"
-
+      - name: Zip the .app bundle
+        run: |
+           cd dist
+           zip -r pyTranscriber.zip main.app
+           
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber
-          path: ./dist/main.app/  # Path adjusted for macOS
+          path: ./dist/pyTranscriber.zip # Path adjusted for macOS
 
   download:
     runs-on: macos-14  # macOS ARM64 runner for downloading
