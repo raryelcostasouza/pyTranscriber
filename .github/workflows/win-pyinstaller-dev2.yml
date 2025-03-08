@@ -68,6 +68,7 @@ jobs:
           $ffmpegPath = (Get-Command ffmpeg).Source
           pyinstaller main.py `
             --onefile `
+            --path="$(Get-Location)" `
             --add-binary="$ffmpegPath;." `
             --add-binary="pytranscriber.sqlite;." `
             --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
