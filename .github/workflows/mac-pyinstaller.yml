@@ -1,8 +1,10 @@
+name: Build and Version Artifacts
+
 on:
- push:
-  branches:
-    - main
-    - dev-2.0
+  push:
+    branches:
+      - main
+      - dev-2.0
 
 jobs:
   build:
@@ -10,19 +12,28 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-     
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure full history and tags are available
+
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Resolved version: $VERSION"
+
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
           ffmpeg-version: release
           architecture: x64
-      
+
       - name: Verify FFmpeg installation
         run: |
           which ffmpeg
           ffmpeg -version 
-      
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
@@ -38,7 +49,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
-     
+
       - name: Verify existence of Whisper assets directory
         run: |
           source .venv/bin/activate  # Activate the virtual environment
@@ -50,7 +61,7 @@ jobs:
             echo "The 'assets' directory does NOT exist."
             exit 1
           fi
-      
+
       - name: Compile with pyInstaller
         run: |
           source .venv/bin/activate
@@ -62,16 +73,18 @@ jobs:
             --add-binary="pytranscriber.sqlite:." \
             --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
             --add-data="$ASSETS_PATH:whisper/assets"
-      - name: Zip the .app bundle
+
+      - name: Zip the .app bundle with version number
         run: |
-           cd dist
-           zip -r pyTranscriber.zip main.app
-           
-      - name: Upload built executable
+          cd dist
+          mv main.app "pyTranscriber-${VERSION}.app"
+          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}.app"
+
+      - name: Upload built executable with version number
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber
-          path: ./dist/pyTranscriber.zip # Path adjusted for macOS
+          name: pyTranscriber-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Path adjusted for macOS
 
   download:
     runs-on: macos-14  # macOS ARM64 runner for downloading
@@ -80,7 +93,7 @@ jobs:
       - name: Download built executable
         uses: actions/download-artifact@v4
         with:
-          name: pyTranscriber
+          name: pyTranscriber-${{ env.VERSION }}
           path: ./output
 
       - name: List downloaded files
