@@ -57,6 +57,7 @@ jobs:
           source .venv/bin/activate
           FFMPPEG_PATH=$(which ffmpeg)
           pyinstaller main.py \
+            --path="$(pwd)" \
             --onefile \
             --add-binary="$FFMPPEG_PATH:." \
             --add-binary="pytranscriber.sqlite:." \
