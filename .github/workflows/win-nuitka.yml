@@ -13,21 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       
-      - name: Fetch all tags
-        run: git fetch --tags origin
-
       - name: Get latest Git tag
         id: get_version
-        run: |
-          for /f "tokens=*" %%i in ('git describe --tags --abbrev=0 2^>nul') do set VERSION=%%i
-          if not defined VERSION set VERSION=v0.1.0
-          echo VERSION=%VERSION% >> $env:GITHUB_ENV
-          echo Resolved version: %VERSION%
-        shell: cmd
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        with:
+          fallback: v0.1.0  # Default version if no tags are found
 
-     
+      - name: Assign version to variable
+        run: |
+          VERSION="${{ steps.get_version.outputs.tag }}"
+          echo "Version is $VERSION"
+
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
