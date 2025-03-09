@@ -84,7 +84,7 @@ jobs:
       - name: Zip the binary with version number
         run: |
           cd dist
-          mv main "pyTranscriber-${VERSION}"
+          mv main.bin "pyTranscriber-${VERSION}"
           zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}"  
       
       - name: Upload built executable
