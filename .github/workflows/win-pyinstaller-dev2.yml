@@ -91,16 +91,16 @@ jobs:
         
       - name: Rename and zip the .app bundle with version number
         run: |
-          cd dist
-          move /Y main.exe pyTranscriber-${VERSION}.exe
-          tar -a -cf pyTranscriber-${VERSION}.zip pyTranscriber-${VERSION}.exe
-        shell: cmd 
+          Set-Location -Path dist
+          Rename-Item -Force main.exe "pyTranscriber-${env:VERSION}.exe"
+          Compress-Archive -Path "pyTranscriber-${env:VERSION}.exe" -DestinationPath "pyTranscriber-${env:VERSION}.zip"
+        shell: pwsh 
         
       - name: Upload built executable for Python ${{ matrix.python-version }}
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber-${VERSION}-py${{ matrix.python-version }}
-          path: ./dist/pyTranscriber-${VERSION}.zip # Ajuste se necessário
+          name: pyTranscriber${env:VERSION}-py${{ matrix.python-version }}
+          path: ./dist/pyTranscriber-${env:VERSION}.zip # Ajuste se necessário
 
   download:
     runs-on: windows-latest
