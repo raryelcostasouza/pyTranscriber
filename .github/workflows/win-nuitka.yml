@@ -88,18 +88,18 @@ jobs:
             --output-dir=dist `
             --windows-console-mode=disable
       
-      - name: Rename and zip the .app bundle with version number
+      - name: Rename and zip the bundle with version number
         run: |
           Set-Location -Path dist
-          Rename-Item -Force main.exe "pyTranscriber-${env:VERSION}.exe"
-          Compress-Archive -Path "pyTranscriber-${env:VERSION}.exe" -DestinationPath "pyTranscriber-${env:VERSION}.zip"
+          Rename-Item -Force main.exe "pyTranscriber-${{env:VERSION}}.exe"
+          Compress-Archive -Path "pyTranscriber-${{env:VERSION}}.exe" -DestinationPath "pyTranscriber-${{env:VERSION}}.zip"
         shell: pwsh
      
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber-${env:VERSION}
-          path: ./dist/pyTranscriber-${env:VERSION}.zip # Adjust this path if Nuitka outputs elsewhere
+          name: pyTranscriber-${{env:VERSION}}
+          path: ./dist/pyTranscriber-${{env:VERSION}}.zip # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: windows-latest
