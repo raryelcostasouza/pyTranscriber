@@ -26,8 +26,9 @@ jobs:
           if (-not $VERSION) {
             $VERSION = "v0.1.0"  # Default version if no tags are found
           }
-          Write-Host "VERSION=$VERSION" | Out-File -Append -FilePath $env:GITHUB_ENV
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           Write-Host "Resolved version: $VERSION"
+        shell: pwsh
         
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
@@ -89,18 +90,20 @@ jobs:
 
         shell: pwsh
         
-      - name: Rename and zip the .app bundle with version number
+      - name: Rename and zip the .exe bundle with version number
         run: |
           Set-Location -Path dist
-          Rename-Item -Force main.exe "pyTranscriber-${{env.VERSION}}.exe"
-          Compress-Archive -Path "pyTranscriber-${{env.VERSION}}.exe" -DestinationPath "pyTranscriber-${{env.VERSION}}.zip"
+          Write-Host "Renaming main.exe to pyTranscriber-$env:VERSION.exe"
+          Rename-Item -Force main.exe "pyTranscriber-$env:VERSION.exe"
+          Write-Host "Creating zip archive: pyTranscriber-$env:VERSION.zip"
+          Compress-Archive -Path "pyTranscriber-$env:VERSION.exe" -DestinationPath "pyTranscriber-$env:VERSION.zip"
         shell: pwsh 
         
       - name: Upload built executable for Python ${{ matrix.python-version }}
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber${{env.VERSION}}-py${{ matrix.python-version }}
-          path: ./dist/pyTranscriber-${{env.VERSION}}.zip # Ajuste se necessário
+          name: pyTranscriber-${{ env.VERSION }}-py${{ matrix.python-version }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip
 
   download:
     runs-on: windows-latest
