@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "pip" # Python의 pip 사용
+    directory: "/"           # 루트 디렉토리
+    schedule:
+      interval: "daily"      # 매일 업데이트 확인
