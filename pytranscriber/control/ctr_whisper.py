@@ -77,10 +77,12 @@ class CtrWhisper(CtrEngine, QObject):
 
         def format_timestamp(seconds):
             """Convert seconds to SRT-compliant timestamp (HH:MM:SS,mmm)."""
-            hours = int(seconds // 3600)
-            minutes = int((seconds % 3600) // 60)
-            secs = int(seconds % 60)
-            millis = int((seconds - int(seconds)) * 1000)
+            td = datetime.timedelta(seconds=seconds)
+            total_seconds = int(td.total_seconds())
+            millis = int(round((td.total_seconds() - total_seconds) * 1000))
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+            secs = total_seconds % 60
             return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
 
         for i, s in enumerate(transcribed_segments, start=1):
