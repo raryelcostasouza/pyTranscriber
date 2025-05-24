@@ -76,16 +76,17 @@ class CtrWhisper(CtrEngine, QObject):
         content = ""
 
         def format_timestamp(seconds):
-            """Convert seconds to SRT-compliant timestamp (HH:MM:SS,MS)."""
-            td = datetime.timedelta(seconds=seconds)
+            """Convert seconds to SRT-compliant timestamp (HH:MM:SS,mmm)."""
+            hours = int(seconds // 3600)
+            minutes = int((seconds % 3600) // 60)
+            secs = int(seconds % 60)
             millis = int((seconds - int(seconds)) * 1000)
-            return f"{str(td)},{millis:03d}"
+            return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
 
         for i, s in enumerate(transcribed_segments, start=1):
             start_time = format_timestamp(s["start"])
             end_time = format_timestamp(s["end"])
-
-            content += f"{i}\n{start_time} --> {end_time}\n{s['text']}\n\n"
+            content += f"{i}\n{start_time} --> {end_time}\n{s['text'].strip()}\n\n"
 
         return content
 
