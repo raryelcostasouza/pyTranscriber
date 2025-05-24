@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pyTranscriber v2.0 RC_1 - 04/03/2025</string>
+   <string>pyTranscriber v2.0 - 24/05/2025</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="bSelectMedia">
