@@ -1,10 +1,12 @@
 name: MacOS PyInstaller
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
       - develop
+ 
 
 jobs:
   build:
