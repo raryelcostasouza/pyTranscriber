@@ -3,8 +3,8 @@ name: Windows PyInstaller
 on:
   push:
     branches:
-      - main
-      - dev-2.0
+      - master
+      - develop
   pull_request:
 
 jobs:
