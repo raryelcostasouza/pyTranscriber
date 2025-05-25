@@ -80,7 +80,7 @@
     </message>
     <message>
         <location filename="gui.py" line="128"/>
-        <source>&amp;About pyTranscriber</source>
+        <source>&amp;More about pyTranscriber</source>
         <translation>&amp;关于 pyTranscriber</translation>
     </message>
     <message>

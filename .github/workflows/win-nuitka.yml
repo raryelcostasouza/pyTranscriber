@@ -1,0 +1,117 @@
+on:
+  push:
+    branches:
+      - main
+      - dev-2.0
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          $VERSION = git describe --tags --abbrev=0 2>$null
+          if (-not $VERSION) {
+            $VERSION = "v0.1.0"  # Default version if no tags are found
+          }
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          Write-Host "Resolved version: $VERSION"
+        shell: pwsh
+
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release  # Specify the desired FFmpeg version
+          architecture: x64 
+          
+      - name: Add FFmpeg to PATH
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          $env:Path += ";$($ffmpegPath.Substring(0, $ffmpegPath.LastIndexOf('\')))"
+          $ffmpegPath 
+        shell: pwsh
+          
+      - name: Verify FFmpeg installation
+        run: |
+          where ffmpeg
+          ffmpeg -version 
+          
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv .venv
+     
+      - name: Activate virtual environment
+        run: |
+          .\.venv\Scripts\Activate
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+     
+      - name: Verificar existência do diretório assets do whisper
+        run: |
+          $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
+          $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
+          if (Test-Path $assetsPath) {
+            Write-Host "O diretório 'assets' existe em: $assetsPath"
+          } else {
+            Write-Host "O diretório 'assets' NÃO existe."
+            exit 1
+          }
+          
+      - name: Compile with Nuitka
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          nuitka `
+            --assume-yes-for-downloads `
+            --enable-plugin=pyqt5 `
+            --include-data-files="pytranscriber.sqlite=pytranscriber.sqlite" `
+            --include-data-files="$ffmpegPath=ffmpeg.exe" `
+            --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
+            --include-package-data="whisper:assets/*=whisper/assets" `
+            main.py `
+            --onefile `
+            --output-dir=dist `
+            --windows-console-mode=disable
+      
+      - name: Rename and zip the .exe bundle with version number
+        run: |
+          Set-Location -Path dist
+          Write-Host "Renaming main.exe to pyTranscriber-$env:VERSION.exe"
+          Rename-Item -Force main.exe "pyTranscriber-$env:VERSION.exe"
+          Write-Host "Creating zip archive: pyTranscriber-$env:VERSION.zip"
+          Compress-Archive -Path "pyTranscriber-$env:VERSION.exe" -DestinationPath "pyTranscriber-$env:VERSION.zip"
+        shell: pwsh 
+     
+      - name: Upload built executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyTranscriber-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Adjust this path if Nuitka outputs elsewhere
+
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download built executable
+        uses: actions/download-artifact@v4
+        with:
+          path: ./output
+
+      - name: List downloaded files
+        run: dir ./output

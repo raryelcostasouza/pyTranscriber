@@ -13,3 +13,7 @@ MANIFEST
 *#*
 ffmpeg*
 notes.txt
+
+Pipfile.lock
+
+Pipfile

@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1045</width>
-    <height>487</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pyTranscriber - v1.9 - 21/12/2022</string>
+   <string>pyTranscriber v2.0 - 24/05/2025</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="bSelectMedia">
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>290</y>
+      <y>380</y>
       <width>341</width>
       <height>34</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>340</y>
+      <y>470</y>
       <width>1021</width>
       <height>23</height>
      </rect>
@@ -59,8 +59,8 @@
    <widget class="QLabel" name="labelCurrentOperation">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>350</y>
+      <x>20</x>
+      <y>420</y>
       <width>871</width>
       <height>41</height>
      </rect>
@@ -73,7 +73,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>290</y>
+      <y>380</y>
       <width>241</width>
       <height>34</height>
      </rect>
@@ -159,8 +159,8 @@
    <widget class="QLabel" name="labelProgressFileIndex">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>350</y>
+      <x>20</x>
+      <y>500</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -173,7 +173,7 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>390</y>
+      <y>510</y>
       <width>108</width>
       <height>36</height>
      </rect>
@@ -224,6 +224,132 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>290</y>
+      <width>591</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lEngine">
+       <property name="text">
+        <string>Engine:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbGoogleEngine">
+       <property name="text">
+        <string>Google Speech (cloud processing)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbWhisper">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>openAI Whisper (local processing)</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>330</y>
+      <width>611</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="lModels">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Models:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelTiny">
+       <property name="text">
+        <string>Tiny</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelBase">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Base</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelSmall">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Small</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelMedium">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Medium</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rbModelLarge">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Large</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -231,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>1045</width>
-     <height>28</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAbout">

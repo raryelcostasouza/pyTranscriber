@@ -1,5 +1,5 @@
 '''
-   (C) 2025 Raryel C. Souza
+   (C) 2019 Raryel C. Souza
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -12,17 +12,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from PyQt5.QtCore import QThread
-from PyQt5.QtCore import pyqtSignal
+class Transcription_Parameters():
 
+    def __init__(self, listFiles, outputFolder, langCode,
+                boolOpenOutputFilesAuto, proxies=None):
+        self.listFiles = listFiles
+        self.outputFolder = outputFolder
+        self.langCode = langCode
+        self.boolOpenOutputFilesAuto = boolOpenOutputFilesAuto
+        self.proxies = proxies
+        self.model_whisper = None
 
-class Thread_Cancel_Autosub(QThread):
-    signalTerminated = pyqtSignal()
+    def set_model_whisper(self, model):
+        self.model_whisper = model
 
-    def __init__(self, pObjWT):
-        self.objWT = pObjWT
-        QThread.__init__(self)
-
-    def run(self):
-        self.objWT.cancel()
-        self.signalTerminated.emit()
+    def get_model_whisper(self):
+        return self.model_whisper

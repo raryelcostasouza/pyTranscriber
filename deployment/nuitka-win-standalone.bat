@@ -1,0 +1,1 @@
+nuitka --enable-plugin=pyqt5  main.py --disable-console --standalone

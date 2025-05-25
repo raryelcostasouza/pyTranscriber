@@ -1,0 +1,118 @@
+name: Windows PyInstaller
+
+on:
+  push:
+    branches:
+      - main
+      - dev-2.0
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.10", "3.12"]  # Paraleliza builds para cada versão do Python
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all tags
+      
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          $VERSION = git describe --tags --abbrev=0 2>$null
+          if (-not $VERSION) {
+            $VERSION = "v0.1.0"  # Default version if no tags are found
+          }
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          Write-Host "Resolved version: $VERSION"
+        shell: pwsh
+        
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release
+          architecture: x64 
+
+      - name: Verify FFmpeg installation
+        run: |
+          where ffmpeg
+          ffmpeg -version 
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create and activate virtual environment for Python ${{ matrix.python-version }}
+        run: |
+          python -m venv .venv-${{ matrix.python-version }}
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
+        shell: pwsh
+
+      - name: Install dependencies for Python ${{ matrix.python-version }}
+        run: |
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
+          python -m ensurepip --upgrade
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+        shell: pwsh
+
+      - name: Verify whisper assets directory for Python ${{ matrix.python-version }}
+        run: |
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
+          $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
+          $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
+          if (Test-Path $assetsPath) {
+            Write-Host "O diretório 'assets' existe em: $assetsPath"
+            echo "ASSETS_PATH=$assetsPath" >> $env:GITHUB_ENV
+          } else {
+            Write-Host "O diretório 'assets' NÃO existe."
+            exit 1
+          }
+        shell: pwsh
+
+      - name: Compile with PyInstaller for Python ${{ matrix.python-version }}
+        run: |
+          .\.venv-${{ matrix.python-version }}\Scripts\Activate
+          $ffmpegPath = (Get-Command ffmpeg).Source
+          pyinstaller main.py `
+            --onefile `
+            --path="$(Get-Location)" `
+            --add-binary="$ffmpegPath;." `
+            --add-binary="pytranscriber.sqlite;." `
+            --add-data="pytranscriber/gui/*.qm;pytranscriber/gui/" `
+            --add-data="${env:ASSETS_PATH};whisper/assets" `
+            --clean
+
+        shell: pwsh
+        
+      - name: Rename and zip the .exe bundle with version number
+        run: |
+          Set-Location -Path dist
+          Write-Host "Renaming main.exe to pyTranscriber-$env:VERSION.exe"
+          Rename-Item -Force main.exe "pyTranscriber-$env:VERSION.exe"
+          Write-Host "Creating zip archive: pyTranscriber-$env:VERSION.zip"
+          Compress-Archive -Path "pyTranscriber-$env:VERSION.exe" -DestinationPath "pyTranscriber-$env:VERSION.zip"
+        shell: pwsh 
+        
+      - name: Upload built executable for Python ${{ matrix.python-version }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyTranscriber-${{ env.VERSION }}-py${{ matrix.python-version }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip
+
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download built executables
+        uses: actions/download-artifact@v4
+        with:
+          path: ./output
+
+      - name: List downloaded files
+        run: dir ./output

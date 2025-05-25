@@ -1,0 +1,106 @@
+name: Linux Nuitka Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev-2.0
+  pull_request:
+    branches:
+      - main
+      - dev-2.0
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04  # Ensure the job runs only on Ubuntu 22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all tags
+        
+      - name: Get latest Git tag
+        id: get_version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Resolved version: $VERSION"
+      
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+        with:
+          ffmpeg-version: release  # Specify the desired FFmpeg version
+          architecture: x64
+
+      - name: Verify FFmpeg installation
+        run: |
+          which ffmpeg
+          ffmpeg -version 
+          
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv .venv
+
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Verify Whisper assets directory
+        run: |
+          source .venv/bin/activate
+          whisperPath=$(python -c "import whisper; print(whisper.__file__)")
+          assetsPath=$(dirname $whisperPath)/assets
+          if [ -d "$assetsPath" ]; then
+            echo "The 'assets' directory exists at: $assetsPath"
+          else
+            echo "The 'assets' directory DOES NOT exist."
+            exit 1
+          fi
+
+      - name: Compile with Nuitka
+        run: |
+          source .venv/bin/activate
+          ffmpegPath=$(which ffmpeg)
+          nuitka \
+            --assume-yes-for-downloads \
+            --enable-plugin=pyqt5 \
+            --include-data-files="pytranscriber.sqlite=pytranscriber.sqlite" \
+            --include-data-files="$ffmpegPath=ffmpeg" \
+            --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" \
+            --include-package-data="whisper:assets/*=whisper/assets" \
+            main.py \
+            --onefile \
+            --output-dir=dist 
+            
+      - name: Zip the binary with version number
+        run: |
+          cd dist
+          mv main.bin "pyTranscriber-${VERSION}"
+          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}"  
+      
+      - name: Upload built executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyTranscriber-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Adjust this path if Nuitka outputs elsewhere
+
+  download:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Download built executable
+        uses: actions/download-artifact@v4
+        with:
+          path: ./output
+
+      - name: List downloaded files
+        run: dir ./output

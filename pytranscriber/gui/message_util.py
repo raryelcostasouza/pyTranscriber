@@ -12,17 +12,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from PyQt5.QtCore import QThread
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QMessageBox
 
 
-class Thread_Cancel_Autosub(QThread):
-    signalTerminated = pyqtSignal()
+class MessageUtil:
 
-    def __init__(self, pObjWT):
-        self.objWT = pObjWT
-        QThread.__init__(self)
+    @staticmethod
+    def show_info_message(info_msg, title=""):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
 
-    def run(self):
-        self.objWT.cancel()
-        self.signalTerminated.emit()
+        msg.setWindowTitle(title)
+        msg.setText(info_msg)
+        msg.exec()
+
+    @staticmethod
+    def show_error_message(error_msg, title="Error"):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+
+        msg.setWindowTitle(title)
+        msg.setText(error_msg)
+        msg.exec()

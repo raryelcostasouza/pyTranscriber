@@ -15,11 +15,10 @@
 import platform
 import os
 import subprocess
-import requests
-import re
-from pathlib import PureWindowsPath
-from urllib.parse import urlparse
 
+import requests
+from requests.adapters import HTTPAdapter, Retry
+import time
 
 
 class MyUtil(object):
@@ -37,14 +36,43 @@ class MyUtil(object):
         try:
             # connect to the host -- tells us if the host is actually
             # reachable
-            res = requests.get('https://www.google.com', timeout=2,proxies=proxies)
-            if res.status_code != 200:
+            headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0'}
+
+            res = MyUtil.send_request('https://www.google.com', proxies=proxies, headers=headers)
+            if res != 200:
                 return False
+
             else:
                 return True
-        except OSError:
+        except Exception as e:
+            print("Error Name: ", e.__class__.__name__)
+            print("Error Message: ", e)
             pass
+
         return False
+
+    @staticmethod
+    def send_request(url,
+                     n_retries=0,
+                     backoff_factor=0.9,
+                     status_codes=[504, 503, 502, 500, 429, 302, 408, 425],
+                     proxies=None,
+                     headers=None):
+        sess = requests.Session()
+        retries = Retry(connect=n_retries, backoff_factor=backoff_factor,
+                        status_forcelist=status_codes)
+        sess.mount("https://", HTTPAdapter(max_retries=retries))
+        sess.mount("http://", HTTPAdapter(max_retries=retries))
+        try:
+            response = sess.get(url, timeout=5, proxies=proxies, headers=headers)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            return response.status_code
+        except requests.Timeout:
+            print("The request timed out")
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+        return -1
+
 
     @staticmethod
     def percentage(currentval, maxval):
