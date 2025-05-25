@@ -148,7 +148,8 @@ class Tokenizer:
         translate: int = self.special_tokens["<|translate|>"]
         transcribe: int = self.special_tokens["<|transcribe|>"]
 
-        langs = tuple(LANGUAGES.keys())[: self.num_languages]
+        langs = tuple(LANGUAGES.keys())
+
         sot_sequence = [sot]
         if self.language is not None:
             sot_sequence.append(sot + 1 + langs.index(self.language))
