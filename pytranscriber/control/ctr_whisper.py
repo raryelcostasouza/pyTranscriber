@@ -20,7 +20,6 @@ import whisper
 import datetime
 import shutil
 from pytranscriber.control.ctr_engine import CtrEngine
-from pytranscriber.control.whisper.override_tokenizer import CustomTokenizer
 
 
 class CtrWhisper(CtrEngine, QObject):
@@ -50,7 +49,6 @@ class CtrWhisper(CtrEngine, QObject):
         CtrWhisper.patch_ffmpeg()  # Ensure FFmpeg is available
 
         model = whisper.load_model(model, download_root=CtrWhisper.MODEL_DIR)
-        model.tokenizer = CustomTokenizer()
         result = model.transcribe(source_path, verbose=True, language=src_language)
 
         if CtrEngine.is_operation_canceled():
