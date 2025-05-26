@@ -76,6 +76,8 @@ jobs:
           
       - name: Compile with Nuitka
         run: |
+          $whisperPath = (python -c "import whisper; print(whisper.__file__)").Trim()
+          $assetsPath = Join-Path (Split-Path $whisperPath) 'assets'
           $ffmpegPath = (Get-Command ffmpeg).Source
           nuitka `
             --assume-yes-for-downloads `
