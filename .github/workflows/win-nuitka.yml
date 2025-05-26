@@ -83,7 +83,7 @@ jobs:
             --include-data-files="pytranscriber.sqlite=pytranscriber.sqlite" `
             --include-data-files="$ffmpegPath=ffmpeg.exe" `
             --include-data-files="pytranscriber/gui/*.qm=pytranscriber/gui/" `
-            --include-package-data="whisper:assets/*=whisper/assets" `
+            --include-data-files="$assetsPath\*=whisper/assets/" `
             main.py `
             --onefile `
             --output-dir=dist `
