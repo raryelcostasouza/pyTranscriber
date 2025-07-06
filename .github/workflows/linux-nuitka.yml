@@ -28,7 +28,7 @@ jobs:
           echo "Resolved version: $VERSION"
       
       - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3.1
+        uses: federicocarboni/setup-ffmpeg@v3
         with:
           ffmpeg-version: release  # Specify the desired FFmpeg version
           architecture: x64
