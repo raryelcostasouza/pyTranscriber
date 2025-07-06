@@ -40,7 +40,7 @@ jobs:
             libtbb12
 
       - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3
+        uses: federicocarboni/setup-ffmpeg@v3.1
         with:
           ffmpeg-version: release
           architecture: x64 
