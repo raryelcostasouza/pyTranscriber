@@ -79,13 +79,13 @@ jobs:
         run: |
           cd dist
           mv main.app "pyTranscriber-${VERSION}.app"
-          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}.app"
+          zip -r "pyTranscriber-macos-${VERSION}.zip" "pyTranscriber-${VERSION}.app"
 
       - name: Upload built executable with version number
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Path adjusted for macOS
+          name: pyTranscriber-macos-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-macos-${{ env.VERSION }}.zip # Path adjusted for macOS
       
   download:
     runs-on: macos-14  # macOS ARM64 runner for downloading
