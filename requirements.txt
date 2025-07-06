@@ -25,5 +25,8 @@ rsa==4.7.2
 six==1.16.0
 uritemplate==3.0.1
 urllib3==2.2.2
+torch==2.3.0+cu126 --index-url https://download.pytorch.org/whl/cu126
+torchvision==0.18.0+cu126 --index-url https://download.pytorch.org/whl/cu126
+torchaudio==2.3.0+cu126 --index-url https://download.pytorch.org/whl/cu126
 openai-whisper
 platformdirs
