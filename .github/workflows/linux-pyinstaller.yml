@@ -39,11 +39,8 @@ jobs:
             libxcb-icccm4 \
             libtbb12
 
-      - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3.1
-        with:
-          ffmpeg-version: release
-          architecture: x64 
+      - name: Install FFmpeg
+        run: sudo apt update && sudo apt install -y ffmpeg
       
       - name: Verify FFmpeg installation
         run: |
