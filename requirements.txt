@@ -1,3 +1,12 @@
+# CUDA-enabled PyTorch packages (CUDA 12.6)
+torch==2.3.0+cu126
+torchvision==0.18.0+cu126
+torchaudio==2.3.0+cu126
+
+# Ensure the extra index for PyTorch CUDA wheels
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# Other dependencies
 cachetools==4.2.4
 certifi==2024.7.4
 chardet==4.0.0
@@ -25,8 +34,5 @@ rsa==4.7.2
 six==1.16.0
 uritemplate==3.0.1
 urllib3==2.2.2
-torch==2.3.0+cu126 --index-url https://download.pytorch.org/whl/cu126
-torchvision==0.18.0+cu126 --index-url https://download.pytorch.org/whl/cu126
-torchaudio==2.3.0+cu126 --index-url https://download.pytorch.org/whl/cu126
 openai-whisper
 platformdirs
