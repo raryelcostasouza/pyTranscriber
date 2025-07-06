@@ -24,6 +24,21 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Resolved version: $VERSION"
      
+      - name: Install missing system libraries (XCB, TBB, etc.)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxcb1 \
+            libxcb-keysyms1 \
+            libxcb-shape0 \
+            libxcb-xkb1 \
+            libxcb-render-util0 \
+            libxcb-image0 \
+            libxcb-xinerama0 \
+            libxkbcommon-x11-0 \
+            libxcb-icccm4 \
+            libtbb12
+
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
         with:
