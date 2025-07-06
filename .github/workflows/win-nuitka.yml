@@ -97,14 +97,14 @@ jobs:
           Write-Host "Renaming main.exe to pyTranscriber-$env:VERSION.exe"
           Rename-Item -Force main.exe "pyTranscriber-$env:VERSION.exe"
           Write-Host "Creating zip archive: pyTranscriber-$env:VERSION.zip"
-          Compress-Archive -Path "pyTranscriber-$env:VERSION.exe" -DestinationPath "pyTranscriber-$env:VERSION.zip"
+          Compress-Archive -Path "pyTranscriber-$env:VERSION.exe" -DestinationPath "pyTranscriber-win-$env:VERSION.zip"
         shell: pwsh 
      
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip # Adjust this path if Nuitka outputs elsewhere
+          name: pyTranscriber-win-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-win-${{ env.VERSION }}.zip # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: windows-latest
