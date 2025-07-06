@@ -1,7 +1,7 @@
 # CUDA-enabled PyTorch packages (CUDA 12.6)
-torch==2.3.0+cu126
-torchvision==0.18.0+cu126
-torchaudio==2.3.0+cu126
+torch==2.3.0
+torchvision==0.18.0
+torchaudio==2.3.0
 
 # Ensure the extra index for PyTorch CUDA wheels
 --extra-index-url https://download.pytorch.org/whl/cu126
