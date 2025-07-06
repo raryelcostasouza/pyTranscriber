@@ -94,13 +94,13 @@ jobs:
         run: |
           cd dist
           mv main "pyTranscriber-${VERSION}"
-          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}"
+          zip -r "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
       
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
-          name: pyTranscriber-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Caminho ajustado para Linux
+          name: pyTranscriber-linux-${{ env.VERSION }}
+          path: ./dist/pyTranscriber-linux-${{ env.VERSION }}.zip  # Caminho ajustado para Linux
 
   download:
     runs-on: ubuntu-22.04
