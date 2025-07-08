@@ -86,18 +86,23 @@ jobs:
             --add-binary="pytranscriber.sqlite:." \
             --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
             --add-data="$ASSETS_PATH:whisper/assets"
-     
+
+      - name: Compress binary with UPX
+        run: |
+          sudo apt install -y upx
+          upx --best --lzma dist/pyTranscriber-${VERSION}
+           
       - name: Zip the binary with version number
         run: |
           cd dist
           mv main "pyTranscriber-${VERSION}"
-          zip -r "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
+          zip -9 "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
       
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber-linux-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-linux-${{ env.VERSION }}.zip  # Caminho ajustado para Linux
+          path: ./dist/pyTranscriber-linux-${{ env.VERSION }}  # Caminho ajustado para Linux
 
   download:
     runs-on: ubuntu-22.04
