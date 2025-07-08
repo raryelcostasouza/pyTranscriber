@@ -90,7 +90,7 @@ jobs:
       - name: Compress binary with UPX
         run: |
           sudo apt install -y upx
-          upx --best --lzma dist/pyTranscriber-${VERSION}
+          upx --best --lzma dist/main
            
       - name: Zip the binary with version number
         run: |
