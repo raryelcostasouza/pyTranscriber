@@ -96,7 +96,7 @@ jobs:
 
       - name: Compress binary with UPX
         run: |
-          upx --best --lzma dist/main
+          upx --ultra-brute dist/main
            
       - name: Zip the binary with version number
         run: |
