@@ -13,6 +13,13 @@ Check live statistics at <a href="https://somsubhra.github.io/github-release-sta
 # Thanks to the people helping funding
 Jixing Zhao, Narsu Narsu, Lucas Thorn, Soonkj Jung, Sergio Moreno, Yooki Adair, Adrien Jarton, YP, JOY_EASY, RodrigoRios, Zhou Mi, Dongmei Chen, Jung Yi Hung, Tah Kwang Tomas Tso
 
+# UPDATE - v2.0-stable - 07/07/2025
+1. Added binary for Linux (GLIBC 2.35 or newer)
+
+# UPDATE - v2.0-stable - 22/05/2025
+1. Fixed issue with cantonese language not working using whisper engine
+2.  Fixed srt file generation not being compliant with srt syntax
+
 # UPDATE - v2.0-RC_1 - 04/03/2025
 1. Added support for <a hfref="https://openai.com/index/whisper/">openAI Whisper</a> with local processing of media files as alternative to Google Speech API (where all media file is uploaded to Google servers for processing)
 2. Added saving/load settings to sqlite local db
