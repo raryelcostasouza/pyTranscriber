@@ -87,17 +87,6 @@ jobs:
             --add-data="pytranscriber/gui/*.qm:pytranscriber/gui/" \
             --add-data="$ASSETS_PATH:whisper/assets"
      
-      - name: Install latest UPX (>= 4.0)
-        run: |
-          curl -L -o upx.tar.xz https://github.com/upx/upx/releases/download/v4.2.1/upx-4.2.1-amd64_linux.tar.xz
-          tar -xf upx.tar.xz
-          sudo mv upx-4.2.1-amd64_linux/upx /usr/local/bin/upx
-          upx --version
-
-      - name: Compress binary with UPX
-        run: |
-          upx --best dist/main
-           
       - name: Zip the binary with version number
         run: |
           cd dist
