@@ -91,7 +91,7 @@ jobs:
         run: |
           cd dist
           mv main "pyTranscriber-${VERSION}"
-          zip -9 "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
+          zip -r "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
       
       - name: Upload built executable
         uses: actions/upload-artifact@v4
