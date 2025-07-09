@@ -27,11 +27,23 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Resolved version: $VERSION"
       
-      - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3.1
-        with:
-          ffmpeg-version: release  # Specify the desired FFmpeg version
-          architecture: x64
+      - name: Install missing system libraries (XCB, TBB, etc.)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxcb1 \
+            libxcb-keysyms1 \
+            libxcb-shape0 \
+            libxcb-xkb1 \
+            libxcb-render-util0 \
+            libxcb-image0 \
+            libxcb-xinerama0 \
+            libxkbcommon-x11-0 \
+            libxcb-icccm4 \
+            libtbb12
+
+      - name: Install FFmpeg
+        run: sudo apt update && sudo apt install -y ffmpeg
 
       - name: Verify FFmpeg installation
         run: |
@@ -85,13 +97,12 @@ jobs:
         run: |
           cd dist
           mv main.bin "pyTranscriber-${VERSION}"
-          zip -r "pyTranscriber-${VERSION}.zip" "pyTranscriber-${VERSION}"  
       
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Adjust this path if Nuitka outputs elsewhere
+          path: ./dist/pyTranscriber-${{ env.VERSION }}  # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: ubuntu-22.04
