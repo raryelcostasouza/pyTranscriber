@@ -97,12 +97,13 @@ jobs:
         run: |
           cd dist
           mv main.bin "pyTranscriber-${VERSION}"
+          zip -r "pyTranscriber-linux-${VERSION}.zip" "pyTranscriber-${VERSION}"
       
       - name: Upload built executable
         uses: actions/upload-artifact@v4
         with:
           name: pyTranscriber-${{ env.VERSION }}
-          path: ./dist/pyTranscriber-${{ env.VERSION }}  # Adjust this path if Nuitka outputs elsewhere
+          path: ./dist/pyTranscriber-${{ env.VERSION }}.zip  # Adjust this path if Nuitka outputs elsewhere
 
   download:
     runs-on: ubuntu-22.04
