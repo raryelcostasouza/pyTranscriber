@@ -13,6 +13,9 @@ Check live statistics at <a href="https://somsubhra.github.io/github-release-sta
 # Thanks to the people helping funding
 Jixing Zhao, Narsu Narsu, Lucas Thorn, Soonkj Jung, Sergio Moreno, Yooki Adair, Adrien Jarton, YP, JOY_EASY, RodrigoRios, Zhou Mi, Dongmei Chen, Jung Yi Hung, Tah Kwang Tomas Tso
 
+# UPDATE - v2.1-stable - 13/07/2025
+1. Compiled torch with CUDA support enabled
+
 # UPDATE - v2.0-stable - 07/07/2025
 1. Added binary for Linux (GLIBC 2.35 or newer)
 
